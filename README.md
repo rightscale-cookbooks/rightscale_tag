@@ -13,11 +13,16 @@ of Instance RightScale Tags].
 
 [List of Instance RightScale Tags]: http://support.rightscale.com/15-References/Machine_Tags/List_of_RightScale_Tags#Tags_for_Instances
 
+Github Repository: [https://github.com/rightscale-cookbooks/rs-machine_tag](https://github.com/rightscale-cookbooks/rs-machine_tag)
+
 # Requirements
 
 * Chef 11 or above
 * [machine_tag] cookbook
 * [marker] cookbook
+* Platform
+  * Ubuntu 12.04
+  * CentOS 6.4
 
 [machine_tag]: https://github.com/rightscale-cookbooks/machine_tag
 [marker]: https://github.com/rightscale-cookbooks/marker
