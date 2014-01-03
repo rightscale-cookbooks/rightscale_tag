@@ -9,15 +9,20 @@ specifically with RightScale. In the future it will include support for defining
 a 3-tier web application architecture on RightScale with machine tags.
 
 For information about some of the machine tags used by this cookbook, see [List
-of RightScale Tags].
+of Instance RightScale Tags].
 
-[List of RightScale Tags]: http://support.rightscale.com/15-References/Machine_Tags/List_of_RightScale_Tags
+[List of Instance RightScale Tags]: http://support.rightscale.com/15-References/Machine_Tags/List_of_RightScale_Tags#Tags_for_Instances
+
+Github Repository: [https://github.com/rightscale-cookbooks/rs-machine_tag](https://github.com/rightscale-cookbooks/rs-machine_tag)
 
 # Requirements
 
 * Chef 11 or above
 * [machine_tag] cookbook
 * [marker] cookbook
+* Platform
+  * Ubuntu 12.04
+  * CentOS 6.4
 
 [machine_tag]: https://github.com/rightscale-cookbooks/machine_tag
 [marker]: https://github.com/rightscale-cookbooks/marker
