@@ -17,8 +17,8 @@ platforms:
 suites:
 - name: default
   run_list:
-  - recipe[rs-machine_tag]
-  - recipe[rs-machine_tag::monitoring]
+  - recipe[rightscale_tag]
+  - recipe[rightscale_tag::monitoring]
   attributes:
     rightscale:
       instance_uuid: 01-ABCDEFG123456

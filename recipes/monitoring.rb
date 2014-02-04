@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: rs-machine_tag
+# Cookbook Name:: rightscale_tag
 # Recipe:: monitoring
 #
 # Copyright (C) 2013 RightScale, Inc.

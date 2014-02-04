@@ -1,6 +1,6 @@
-# rs-machine_tag cookbook
+# rightscale_tag cookbook
 
-[![Build Status](https://travis-ci.org/rightscale-cookbooks/rs-machine_tag.png?branch=master)](https://travis-ci.org/rightscale-cookbooks/rs-machine_tag)
+[![Build Status](https://travis-ci.org/rightscale-cookbooks/rightscale_tag.png?branch=master)](https://travis-ci.org/rightscale-cookbooks/rightscale_tag)
 
 This cookbook provides recipes and library methods for dealing with machine tags
 in RightScale. It builds on the resources and library methods in the
@@ -13,7 +13,7 @@ of Instance RightScale Tags].
 
 [List of Instance RightScale Tags]: http://support.rightscale.com/15-References/Machine_Tags/List_of_RightScale_Tags#Tags_for_Instances
 
-Github Repository: [https://github.com/rightscale-cookbooks/rs-machine_tag](https://github.com/rightscale-cookbooks/rs-machine_tag)
+Github Repository: [https://github.com/rightscale-cookbooks/rightscale_tag](https://github.com/rightscale-cookbooks/rightscale_tag)
 
 # Requirements
 
@@ -29,14 +29,14 @@ Github Repository: [https://github.com/rightscale-cookbooks/rs-machine_tag](http
 
 # Usage
 
-On a RightScale server, add `rs-machine_tag::default` to the run list. This will
+On a RightScale server, add `rightscale_tag::default` to the run list. This will
 use the `node['rightscale']['instance_uuid']` attribute to create the
 `server:uuid` tag and the `node['cloud']['public_ips']` and
 `node['cloud']['private_ips']`values  that come from the Ohai cloud plugin to
 pupulate the `server:public_ip_X` and `server:private_ip_X` tags (where `X` is 
 0, 1, etc.).
 
-The `rs-machine_tag::monitoring` recipe should be placed in the run list after a
+The `rightscale_tag::monitoring` recipe should be placed in the run list after a
 recipe setting up `collectd` or equivalent to send monitoring data to RightScale
 or, alternatively, used with `include_recipe` at the end of a recipe doing that.
 
