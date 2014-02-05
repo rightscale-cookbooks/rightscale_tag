@@ -27,6 +27,7 @@ action :create do
   ].each do |tag|
     machine_tag tag
   end
+  new_resource.updated_by_last_action(true)
 end
 
 # The delete action that removes the application specific tags from the server
@@ -41,4 +42,5 @@ action :delete do
       action :delete
     end
   end
+  new_resource.updated_by_last_action(true)
 end
