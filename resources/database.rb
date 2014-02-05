@@ -27,7 +27,7 @@ attribute :lineage, :kind_of => String
 
 # The timestamp used to create the <role>_active tag. This tag represents that the server is in the specified role
 # since this timestamp
-attribute :timestamp, :kind_of => Fixnum
+attribute :timestamp, :kind_of => [Time, Fixnum]
 
 # Creates the required tags for the database server
 actions :create
