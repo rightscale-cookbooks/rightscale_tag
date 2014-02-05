@@ -62,7 +62,12 @@ class Chef
       end
 
       build_server_hash(servers) do |tags|
-        #
+        application_names = tags[/^load_balancer:active_.+$/].map do |tag|
+          next if tag.value != 'true'
+          tag.predicate.gsub(/^active_/, '')
+        end
+
+        {'application_names' => application_names.compact}
       end
     end
 
@@ -86,9 +91,8 @@ class Chef
     #         'tags': MachineTag::Set,
     #         'applications': {
     #           'APP-1': {
-    #             'bind_address': 'IP:PORT',
-    #             'ip': 'IP',
-    #             'port': 'PORT',
+    #             'bind_ip_address': 'IP',
+    #             'bind_port': PORT,
     #             'vhost_path': 'VHOST_PATH',
     #           }
     #         },
@@ -121,7 +125,23 @@ class Chef
       end
 
       build_server_hash(servers) do |tags|
-        #
+        application_hashes = tags[/^application:active_.+$/].map do |tag|
+          next if tag.value != 'true'
+          application_name = tag.predicate.gsub(/^active_/, '')
+          application_hash = {}
+
+          bind_ip_address = tags['application', "bind_ip_address_#{application_name}"].first
+          bind_port = tags['application', "bind_port_#{application_name}"].first
+          vhost_path = tags['application', "vhost_path_#{application_name}"].first
+
+          application_hash['bind_ip_address'] = bind_ip_address.value if  bind_ip_address
+          application_hash['bind_port'] = bind_port.value.to_i if bind_port
+          application_hash['vhost_path'] = vhost_path.value if vhost_path
+
+          [application_name, application_hash]
+        end
+
+        {'applications' => Hash[application_hashes.compact]}
       end
     end
 
@@ -170,7 +190,30 @@ class Chef
       end
 
       build_server_hash(servers) do |tags|
-        #
+        server_hash = {'lineage' => tags['database:lineage'].first.value}
+        master_active = tags['database:master_active'].first
+        slave_active = tags['database:slave_active'].first
+
+        if master_active && slave_active
+          master_since = Time.at(master_active.value.to_i)
+          slave_since = Time.at(slave_active.value.to_i)
+
+          if master_since >= slave_since
+            server_hash['role'] = 'master'
+            server_hash['master_since'] = master_since
+          else
+            server_hash['role'] = 'slave'
+            server_hash['slave_since]'] = slave_since
+          end
+        elsif master_active
+          server_hash['role'] = 'master'
+          server_hash['master_since'] = Time.at(master_active.value.to_i)
+        elsif slave_active
+          server_hash['role'] = 'slave'
+          server_hash['slave_since'] = Time.at(slave_active.value.to_i)
+        end
+
+        server_hash
       end
     end
 
@@ -184,7 +227,20 @@ class Chef
     end
 
     def build_server_hash(servers, &block)
-      #
+      server_hashes = servers.map do |tags|
+        uuid = tags['server:uuid'].first.value
+        server_hash = {
+          'tags' => tags,
+          'public_ips' => tags[/^server:public_ip_\d+$/].map { |tag| tag.value },
+          'private_ips' => tags[/^server:private_ip_\d+$/].map { |tag| tag.value },
+        }
+
+        server_hash.merge!(block.call(tags)) if block
+
+        [uuid, server_hash]
+      end
+
+      Hash[server_hashes]
     end
   end
 end
