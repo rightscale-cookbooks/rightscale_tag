@@ -32,3 +32,22 @@ suites:
       - null
       - ""
       - 10.0.2.15
+# TODO: This suite should be refactored to load_balancer, application, and database as well as the rightscale_tag::test
+# recipe should be moved to a fake cookbook as separate recipes.
+- name: test
+  run_list:
+  - recipe[rightscale_tag]
+  - recipe[rightscale_tag::test]
+  attributes:
+    rightscale:
+      instance_uuid: 01-ABCDEFG123456
+    cloud:
+      provider: vagrant
+      public_ips:
+      - null
+      - ""
+      - 33.33.33.10
+      private_ips:
+      - null
+      - ""
+      - 10.0.2.15
