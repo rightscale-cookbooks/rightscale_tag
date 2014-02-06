@@ -233,6 +233,13 @@ class Chef
       options[:required_tags] += tags
     end
 
+    # Builds an array of server information hashes to be returned by the `find_*_servers` methods. A callback
+    # block can be passed to further populate each server information hash from each tag set.
+    #
+    # @param servers [Array<MachineTag::Set>] the array of tag sets returned by Chef::MachineTagHelper#tag_search
+    # @param block [Proc(MachineTag::Set)] a block that does further processing on each tag set; it should
+    #   return a hash that will be merged into the server information hash
+    #
     def build_server_hash(servers, &block)
       server_hashes = servers.map do |tags|
         uuid = tags['server:uuid'].first.value

@@ -17,4 +17,7 @@ VERSION
 .kitchen/
 .kitchen.local.yml
 
+.yardoc
+doc
+
 cache_dir/
