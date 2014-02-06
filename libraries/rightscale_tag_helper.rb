@@ -53,7 +53,7 @@ class Chef
         query_tag = 'load_balancer:'
       end
 
-      servers = tag_search(node, query_tag, options)
+      servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       unless application_name
         servers.reject! do |tags|
@@ -116,7 +116,7 @@ class Chef
         query_tag = 'application:'
       end
 
-      servers = tag_search(node, query_tag, options)
+      servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       unless application_name
         servers.reject! do |tags|
@@ -181,7 +181,7 @@ class Chef
       end
       required_tags(options, ::MachineTag::Tag.machine_tag('database', 'lineage', '*'))
 
-      servers = tag_search(node, query_tag, options)
+      servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       if lineage
         servers.reject! do |tags|
@@ -219,6 +219,13 @@ class Chef
 
     private
 
+    # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various
+    # `find_*_servers` methods. By default it will add `server:uuid`, any other requirements need to be passed
+    # as additional arguments. This method can be called multiple times to add further tag requirements.
+    #
+    # @param options [Hash] the options hash to populate
+    # @param tags [Array<String>] the required tags
+    #
     def required_tags(options, *tags)
       require 'set'
 
