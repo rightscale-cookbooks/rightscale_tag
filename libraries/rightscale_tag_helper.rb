@@ -19,28 +19,32 @@
 
 module Rightscale
   module RightscaleTag
-    # Finds all load balancers if no name is given and finds
-    # load balancers matching the application_name if the application_name
-    # is given. The options hash is passed to the underlying machine_tag
-    # resource
+    # Find load balancer servers using tags. This will find all active load balancer servers, or, if
+    # `application_name` is given, it will find all load balancer servers serving for that application.
     #
-    # @param node
-    # @param application_name
+    # @param node [Chef::Node] the Chef node
+    # @param application_name [String, nil] the name of the application served by load balancer servers
+    #   to search for
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
     #
-    # @return [Hash] Information about all matching load balancer servers
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
     #
     # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
     #
-    # @example Example Hash output
+    # @example Example server hash
     #
     #     {
-    #       'UUID-1': {
-    #         'tags': MachineTag::Set,
-    #         'application_names': [],
-    #         'private_ips': [],
-    #         'public_ips': []
+    #       '01-ABCDEF123456' => {
+    #         'tags' => MachineTag::Set[
+    #           'load_balancer:active_www=true',
+    #           'server:public_ip_0=203.0.113.2',
+    #           'server:private_ip_0=10.0.0.2',
+    #           'server:uuid=01-ABCDEF123456'
+    #         ],
+    #         'application_names' => ['www'],
+    #         'public_ips' => ['203.0.113.2'],
+    #         'private_ips' => ['10.0.0.2']
     #       }
     #     }
     #
@@ -71,37 +75,58 @@ module Rightscale
       end
     end
 
+    # Find load balancer servers using tags. This will find all active load balancer servers, or, if
+    # `application_name` is given, it will find all load balancer servers serving for that application.
+    #
+    # @param node [Chef::Node] the Chef node
+    # @param application_name [String, nil] the name of the application served by load balancer servers
+    #   to search for
+    #
+    # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
+    #
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
+    #
+    # @see .find_load_balancer_servers
+    #
     def find_load_balancer_servers(node, application_name = nil, options = {})
       Rightscale::RightscaleTag.find_load_balancer_servers(node, application_name, options)
     end
 
-    # Finds all application servers if no application name is given and finds
-    # application servers matching the application_name if the application_name
-    # is given.
+    # Find application servers using tags. This will find all active application servers, or, if
+    # `application_name` is given, it will find all application servers serving that application.
     #
-    # @param node
-    # @param application_name
+    # @param node [Chef::Node] the Chef node
+    # @param application_name [String, nil] the name of the application server by the application servers
+    #   to search for
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
     #
-    # @return [Hash] Information about all matching application servers
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
     #
     # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
     #
-    # @example Example Hash output
+    # @example Example server hash
     #
     #     {
-    #       'UUID-1': {
-    #         'tags': MachineTag::Set,
-    #         'applications': {
-    #           'APP-1': {
-    #             'bind_ip_address': 'IP',
-    #             'bind_port': PORT,
-    #             'vhost_path': 'VHOST_PATH',
+    #       '01-ABCDEF7890123' => {
+    #         'tags' => MachineTag::Set[
+    #           'application:active_www=true',
+    #           'application:bind_ip_address_www=10.0.0.3',
+    #           'application:bind_port_www=8080',
+    #           'application:vhost_path_www=/',
+    #           'server:public_ip_0=203.0.113.3',
+    #           'server:private_ip_0=10.0.0.3',
+    #           'server:uuid=01-ABCDEF7890123'
+    #         ],
+    #         'applications' => {
+    #           'www' => {
+    #             'bind_ip_address' => '10.0.0.3',
+    #             'bind_port' => 8080,
+    #             'vhost_path' => '/',
     #           }
     #         },
-    #         'private_ips': [],
-    #         'public_ips': []
+    #         'public_ips' => ['203.0.113.3'],
+    #         'private_ips' => ['10.0.0.3']
     #       }
     #     }
     #
@@ -149,32 +174,75 @@ module Rightscale
       end
     end
 
+    # Find application servers using tags. This will find all active application servers, or, if
+    # `application_name` is given, it will find all application servers serving that application.
+    #
+    # @param node [Chef::Node] the Chef node
+    # @param application_name [String, nil] the name of the application server by the application servers
+    #   to search for
+    #
+    # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
+    #
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
+    #
+    # @see .find_application_servers
+    #
     def find_application_servers(node, application_name = nil, options = {})
       Rightscale::RightscaleTag.find_application_servers(node, application_name, options)
     end
 
+    # Find database servers using tags. This will find all active database servers, or, if `lineage` is
+    # given, it will find all database servers for that linage, or, if `role` is specified it will find
+    # the database server(s) with that role.
     #
-    # @param node
-    # @param lineage [String] the lineage used to filter database servers
-    # @param role [Symbol] the role to filter. Valid values are `:master` and `:slave`
+    # @param node [Chef::Node] the Chef node
+    # @param lineage [String] the lineage of the database servers to search for
+    # @param role [Symbol, String] the role of the database servers to search for; this should be `:master`
+    #   or `:slave`
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
     #
-    # @return [Hash] Information about all matching database servers
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
     #
     # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
     #
-    # @example Example Hash Output
+    # @example Example master server hash
     #
     #     {
-    #       'UUID-1': {
-    #         'tags': MachineTag::Set,
-    #         'lineage': 'LINEAGE',
-    #         'role': 'ROLE',
-    #         'master_since': Time, # Only for master servers
-    #         'slave_since': Time,  # Only for slave servers
-    #         'private_ips': [],
-    #         'public_ips': []
+    #       '01-ABCDEF4567890' => {
+    #         'tags' => MachineTag::Set[
+    #           'database:active=true',
+    #           'database:master_active=1391803034',
+    #           'database:lineage=example',
+    #           'server:public_ip_0=203.0.113.4',
+    #           'server:private_ip_0=10.0.0.4',
+    #           'server:uuid=01-ABCDEF4567890'
+    #         ],
+    #         'lineage' => 'example',
+    #         'role' => 'master',
+    #         'master_since' => Time.at(1391803034),
+    #         'public_ips' => ['203.0.113.4'],
+    #         'private_ips' => ['10.0.0.4']
+    #       }
+    #     }
+    #
+    # @example Example slave server hash
+    #
+    #     {
+    #       '01-GHIJKL1234567' => {
+    #         'tags' => MachineTag::Set[
+    #           'database:active=true',
+    #           'database:slave_active=1391803892',
+    #           'database:lineage=example',
+    #           'server:public_ip_0=203.0.113.5',
+    #           'server:private_ip_0=10.0.0.5',
+    #           'server:uuid=01-GHIJKL1234567'
+    #         ],
+    #         'lineage' => 'example',
+    #         'role' => 'slave',
+    #         'slave_since' => Time.at(1391803892),
+    #         'public_ips' => ['203.0.113.5'],
+    #         'private_ips' => ['10.0.0.5']
     #       }
     #     }
     #
@@ -225,6 +293,21 @@ module Rightscale
       end
     end
 
+    # Find database servers using tags. This will find all active database servers, or, if `lineage` is
+    # given, it will find all database servers for that linage, or, if `role` is specified it will find
+    # the database server(s) with that role.
+    #
+    # @param node [Chef::Node] the Chef node
+    # @param lineage [String] the lineage of the database servers to search for
+    # @param role [Symbol, String] the role of the database servers to search for; this should be `:master`
+    #   or `:slave`
+    #
+    # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
+    #
+    # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
+    #
+    # @see .find_database_servers
+    #
     def find_database_servers(node, lineage = nil, role = nil, options = {})
       Rightscale::RightscaleTag.find_database_servers(node, lineage, role, options)
     end
@@ -245,12 +328,14 @@ module Rightscale
       options[:required_tags] += tags
     end
 
-    # Builds an array of server information hashes to be returned by the `find_*_servers` methods. A callback
+    # Builds a hash of server information hashes to be returned by the `find_*_servers` methods. A callback
     # block can be passed to further populate each server information hash from each tag set.
     #
     # @param servers [Array<MachineTag::Set>] the array of tag sets returned by Chef::MachineTagHelper#tag_search
     # @param block [Proc(MachineTag::Set)] a block that does further processing on each tag set; it should
     #   return a hash that will be merged into the server information hash
+    #
+    # @return [Mash] the hash with server UUIDs as keys and server information hashes as values
     #
     def self.build_server_hash(servers, &block)
       server_hashes = servers.map do |tags|
