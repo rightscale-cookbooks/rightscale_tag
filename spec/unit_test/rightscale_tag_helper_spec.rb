@@ -251,4 +251,204 @@ describe Rightscale::RightscaleTag do
       end
     end
   end
+
+  describe '.find_database_servers' do
+    let(:database_master) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8911IT',
+        'database:active=true',
+        'database:master_active=1391803034',
+        'database:lineage=example',
+        'server:private_ip_0=10.0.0.1',
+        'server:public_ip_0=157.56.165.202',
+        'server:public_ip_1=157.56.165.203',
+      ]
+    end
+
+    let(:database_slave) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8922IT',
+        'database:active=true',
+        'database:slave_active=1391803892',
+        'database:lineage=example',
+        'server:public_ip_0=157.56.166.202',
+        'server:public_ip_1=157.56.166.203',
+      ]
+    end
+
+    context 'when no database role or lineage is specified' do
+      let(:tags) do
+        [database_master, database_slave]
+      end
+
+      it 'returns tags of all database servers' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:active=true',
+          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+        ).and_return(tags)
+        response = fake.find_database_servers(node)
+
+        response['01-83PJQDO8911IT']['tags'].should eq(database_master)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['lineage'].should eq('example')
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+
+        response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
+        response['01-83PJQDO8922IT']['private_ips'].should eq([])
+        response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
+        response['01-83PJQDO8922IT']['lineage'].should eq('example')
+        response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+      end
+    end
+
+    context 'when the database lineage is given and the role is not given' do
+      let(:tags) do
+        [database_master, database_slave]
+      end
+
+      it 'returns tags of all database servers' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:active=true',
+          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+        ).and_return(tags)
+        response = fake.find_database_servers(node, 'example')
+
+        response['01-83PJQDO8911IT']['tags'].should eq(database_master)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['lineage'].should eq('example')
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+
+        response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
+        response['01-83PJQDO8922IT']['private_ips'].should eq([])
+        response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
+        response['01-83PJQDO8922IT']['lineage'].should eq('example')
+        response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+      end
+
+      it 'returns an empty Mash when the lineage is not available' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:active=true',
+          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+        ).and_return([])
+        response = fake.find_database_servers(node, 'undefined')
+
+        response.should be_an_instance_of(Mash)
+        response.should be_empty
+      end
+    end
+
+    context 'when the database role is given and the lineage is not given' do
+      it 'returns tags of the master database server' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:master_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([database_master])
+        response = fake.find_database_servers(node, nil, 'master')
+
+        response['01-83PJQDO8911IT']['tags'].should eq(database_master)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['lineage'].should eq('example')
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+      end
+
+      it 'returns tags of the slave database server' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:slave_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([database_slave])
+        response = fake.find_database_servers(node, nil, 'slave')
+
+        response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
+        response['01-83PJQDO8922IT']['private_ips'].should eq([])
+        response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
+        response['01-83PJQDO8922IT']['lineage'].should eq('example')
+        response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+      end
+
+      it 'returns an empty Mash when the role is not available' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:undefined_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([])
+        response = fake.find_database_servers(node, nil, 'undefined')
+
+        response.should be_an_instance_of(Mash)
+        response.should be_empty
+      end
+    end
+
+    context 'when the database role and lineage is given' do
+      it 'returns tags of the master database server matching example as lineage' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:master_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([database_master])
+        response = fake.find_database_servers(node, 'example', 'master')
+
+        response['01-83PJQDO8911IT']['tags'].should eq(database_master)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['lineage'].should eq('example')
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+      end
+
+      it 'returns tags of the slave database server matching example as lineage' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:slave_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([database_slave])
+        response = fake.find_database_servers(node, 'example', 'slave')
+
+        response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
+        response['01-83PJQDO8922IT']['private_ips'].should eq([])
+        response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
+        response['01-83PJQDO8922IT']['lineage'].should eq('example')
+        response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+      end
+
+      it 'returns an empty Mash when the role is not available' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:undefined_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([])
+        response = fake.find_database_servers(node, 'example', 'undefined')
+
+        response.should be_an_instance_of(Mash)
+        response.should be_empty
+      end
+
+      it 'returns an empty Mash when the lineage is not available' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:master_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([])
+        response = fake.find_database_servers(node, 'undefined', 'master')
+
+        response.should be_an_instance_of(Mash)
+        response.should be_empty
+      end
+
+      it 'returns an empty Mash when both role and lineage are not available' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:undefined_active=*',
+          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+        ).and_return([])
+        response = fake.find_database_servers(node, 'undefined', 'undefined')
+
+        response.should be_an_instance_of(Mash)
+        response.should be_empty
+      end
+    end
+  end
 end
