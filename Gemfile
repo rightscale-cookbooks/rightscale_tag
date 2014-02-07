@@ -7,7 +7,7 @@ group :integration do
   gem 'machine_tag'
   gem 'test-kitchen', '~> 1.1.0'
   gem 'kitchen-vagrant'
-  gem 'strainer', '~> 3.3.0'
-  gem 'chefspec', '~> 1.3.0'
+  gem 'strainer', '~> 3.3'
+  gem 'chefspec', '~> 3.2'
   gem 'travis-lint'
 end
