@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-class Chef
+module Rightscale
   module RightscaleTag
     # Finds all load balancers if no name is given and finds
     # load balancers matching the application_name if the application_name
@@ -44,7 +44,7 @@ class Chef
     #       }
     #     }
     #
-    def find_load_balancer_servers(node, application_name = nil, options = {})
+    def self.find_load_balancer_servers(node, application_name = nil, options = {})
       required_tags(options)
 
       if application_name
@@ -69,6 +69,10 @@ class Chef
 
         {'application_names' => application_names.compact}
       end
+    end
+
+    def find_load_balancer_servers(node, application_name = nil, options = {})
+      Rightscale::RightscaleTag.find_load_balancer_servers(node, application_name, options)
     end
 
     # Finds all application servers if no application name is given and finds
@@ -102,7 +106,7 @@ class Chef
     #     }
     #
     #
-    def find_application_servers(node, application_name = nil, options = {})
+    def self.find_application_servers(node, application_name = nil, options = {})
       required_tags(options)
 
       if application_name
@@ -145,6 +149,10 @@ class Chef
       end
     end
 
+    def find_application_servers(node, application_name = nil, options = {})
+      Rightscale::RightscaleTag.find_application_servers(node, application_name, options)
+    end
+
     #
     # @param node
     # @param lineage [String] the lineage used to filter database servers
@@ -170,7 +178,7 @@ class Chef
     #       }
     #     }
     #
-    def find_database_servers(node, lineage = nil, role = nil, options = {})
+    def self.find_database_servers(node, lineage = nil, role = nil, options = {})
       required_tags(options)
 
       if role
@@ -217,6 +225,10 @@ class Chef
       end
     end
 
+    def find_database_servers(node, lineage = nil, role = nil, options = {})
+      Rightscale::RightscaleTag.find_database_servers(node, lineage, role, options)
+    end
+
     private
 
     # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various
@@ -226,7 +238,7 @@ class Chef
     # @param options [Hash] the options hash to populate
     # @param tags [Array<String>] the required tags
     #
-    def required_tags(options, *tags)
+    def self.required_tags(options, *tags)
       require 'set'
 
       options[:required_tags] ||= Set['server:uuid']
@@ -240,7 +252,7 @@ class Chef
     # @param block [Proc(MachineTag::Set)] a block that does further processing on each tag set; it should
     #   return a hash that will be merged into the server information hash
     #
-    def build_server_hash(servers, &block)
+    def self.build_server_hash(servers, &block)
       server_hashes = servers.map do |tags|
         uuid = tags['server:uuid'].first.value
         server_hash = {
@@ -254,7 +266,7 @@ class Chef
         [uuid, server_hash]
       end
 
-      Hash[server_hashes]
+      Mash.from_hash(Hash[server_hashes])
     end
   end
 end

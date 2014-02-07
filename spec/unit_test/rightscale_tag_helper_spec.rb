@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe Chef::RightscaleTag do
+describe Rightscale::RightscaleTag do
   let(:node) do
     node = Chef::Node.new
     node.set['cloud']['provider'] = 'some_cloud'
@@ -32,10 +32,9 @@ describe Chef::RightscaleTag do
 
   let(:fake) do
     fake_obj = Fake.new
-    fake_obj.extend(Chef::RightscaleTag)
+    fake_obj.extend(Rightscale::RightscaleTag)
     fake_obj
   end
-
 
   describe '.find_load_balancer_servers' do
     let(:load_balancer_1) do
