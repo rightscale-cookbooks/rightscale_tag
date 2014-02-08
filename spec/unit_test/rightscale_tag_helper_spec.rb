@@ -303,6 +303,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
+        response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
 
         response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
         response['01-83PJQDO8922IT']['private_ips'].should eq([])
@@ -310,6 +312,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
+        response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
     end
 
@@ -336,6 +340,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
+        response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
 
         response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
         response['01-83PJQDO8922IT']['private_ips'].should eq([])
@@ -343,6 +349,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
+        response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
 
       it 'returns an empty Mash when the lineage is not available' do
@@ -382,6 +390,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
+        response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
       end
 
       it 'returns tags of the slave database server' do
@@ -403,6 +413,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
+        response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
 
       it 'returns an empty Mash when the role is not available' do
@@ -443,6 +455,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
+        response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
       end
 
       it 'returns tags of the slave database server matching example as lineage' do
@@ -464,6 +478,8 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
+        response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
 
       it 'returns an empty Mash when the role is not available' do
