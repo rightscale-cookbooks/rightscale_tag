@@ -19,11 +19,15 @@
 
 # The create action that creates required tags for a database server
 action :create do
-  [
-    "database:active=true",
-    "database:lineage=#{new_resource.lineage}",
-    "database:#{new_resource.role}_active=#{new_resource.timestamp}"
-  ].each do |tag|
+  database_tags = [
+    ::MachineTag::Tag.machine_tag('database', 'active', true),
+    ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),
+    ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', new_resource.bind_ip_address),
+    ::MachineTag::Tag.machine_tag('database', 'bind_port', new_resource.bind_port),
+  ]
+  database_tags << "database:#{new_resource.role}_active=#{new_resource.timestamp}" if new_resource.role
+
+  database_tags.each do |tag|
     machine_tag tag
   end
   new_resource.updated_by_last_action(true)
@@ -31,11 +35,15 @@ end
 
 # The delete action that removes the database specific tags from the server
 action :delete do
-  [
-    "database:active=true",
-    "database:lineage=#{new_resource.lineage}",
-    "database:#{new_resource.role}_active=#{new_resource.timestamp}"
-  ].each do |tag|
+  database_tags = [
+    ::MachineTag::Tag.machine_tag('database', 'active', true),
+    ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),
+    ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', new_resource.bind_ip_address),
+    ::MachineTag::Tag.machine_tag('database', 'bind_port', new_resource.bind_port),
+  ]
+  database_tags << "database:#{new_resource.role}_active=#{new_resource.timestamp}" if new_resource.role
+
+  database_tags.each do |tag|
     machine_tag tag do
       action :delete
     end

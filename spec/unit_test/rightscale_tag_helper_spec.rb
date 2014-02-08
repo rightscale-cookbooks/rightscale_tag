@@ -259,6 +259,8 @@ describe Rightscale::RightscaleTag do
         'database:active=true',
         'database:master_active=1391803034',
         'database:lineage=example',
+        'database:bind_ip_address=10.0.0.1',
+        'database:bind_port=3306',
         'server:private_ip_0=10.0.0.1',
         'server:public_ip_0=157.56.165.202',
         'server:public_ip_1=157.56.165.203',
@@ -271,6 +273,8 @@ describe Rightscale::RightscaleTag do
         'database:active=true',
         'database:slave_active=1391803892',
         'database:lineage=example',
+        'database:bind_ip_address=157.56.166.202',
+        'database:bind_port=3306',
         'server:public_ip_0=157.56.166.202',
         'server:public_ip_1=157.56.166.203',
       ]
@@ -284,7 +288,12 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of all database servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:active=true',
-          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return(tags)
         response = fake.find_database_servers(node)
 
@@ -312,7 +321,12 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of all database servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:active=true',
-          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return(tags)
         response = fake.find_database_servers(node, 'example')
 
@@ -334,7 +348,12 @@ describe Rightscale::RightscaleTag do
       it 'returns an empty Mash when the lineage is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:active=true',
-          {:required_tags => Set['server:uuid', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined')
 
@@ -347,7 +366,13 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of the master database server' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:master_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([database_master])
         response = fake.find_database_servers(node, nil, 'master')
 
@@ -362,7 +387,13 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of the slave database server' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:slave_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([database_slave])
         response = fake.find_database_servers(node, nil, 'slave')
 
@@ -377,7 +408,13 @@ describe Rightscale::RightscaleTag do
       it 'returns an empty Mash when the role is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:undefined_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([])
         response = fake.find_database_servers(node, nil, 'undefined')
 
@@ -390,7 +427,13 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of the master database server matching example as lineage' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:master_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([database_master])
         response = fake.find_database_servers(node, 'example', 'master')
 
@@ -405,7 +448,13 @@ describe Rightscale::RightscaleTag do
       it 'returns tags of the slave database server matching example as lineage' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:slave_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([database_slave])
         response = fake.find_database_servers(node, 'example', 'slave')
 
@@ -420,7 +469,13 @@ describe Rightscale::RightscaleTag do
       it 'returns an empty Mash when the role is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:undefined_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([])
         response = fake.find_database_servers(node, 'example', 'undefined')
 
@@ -431,7 +486,13 @@ describe Rightscale::RightscaleTag do
       it 'returns an empty Mash when the lineage is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:master_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined', 'master')
 
@@ -442,7 +503,13 @@ describe Rightscale::RightscaleTag do
       it 'returns an empty Mash when both role and lineage are not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'database:undefined_active=*',
-          {:required_tags => Set['server:uuid', 'database:active=true', 'database:lineage=*']}
+          {:required_tags => Set[
+            'server:uuid',
+            'database:active=true',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined', 'undefined')
 

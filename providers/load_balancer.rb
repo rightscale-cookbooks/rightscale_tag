@@ -19,13 +19,13 @@
 
 # The create action that creates required tags for a load balancer server
 action :create do
-  machine_tag "load_balancer:active_#{new_resource.application_name}=true"
+  machine_tag ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true)
   new_resource.updated_by_last_action(true)
 end
 
 # The delete action that removes the load balancer specific tags from the server
 action :delete do
-  machine_tag "load_balancer:active_#{new_resource.application_name}=true" do
+  machine_tag ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true) do
     action :delete
   end
   new_resource.updated_by_last_action(true)

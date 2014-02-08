@@ -21,7 +21,16 @@
 attribute :application_name, :kind_of => String, :name_attribute => true
 
 # The bind IP address of the application
-attribute :bind_ip_address, :kind_of => String, :required => true
+attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks => {
+  'should be a valid IP address' => lambda do |ip_address|
+    require 'ipaddress'
+    begin
+      IPAddress.parse(ip_address)
+    rescue ArgumentError
+      false
+    end
+  end
+}
 
 # The bind port of the application
 attribute :bind_port, :kind_of => Fixnum, :required => true

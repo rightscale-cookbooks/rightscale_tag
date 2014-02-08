@@ -219,6 +219,8 @@ module Rightscale
     #           'server:uuid=01-ABCDEF4567890'
     #         ],
     #         'lineage' => 'example',
+    #         'bind_ip_address' => '10.0.0.4',
+    #         'bind_port' => 3306,
     #         'role' => 'master',
     #         'master_since' => Time.at(1391803034),
     #         'public_ips' => ['203.0.113.4'],
@@ -239,6 +241,8 @@ module Rightscale
     #           'server:uuid=01-GHIJKL1234567'
     #         ],
     #         'lineage' => 'example',
+    #         'bind_ip_address' => '10.0.0.5',
+    #         'bind_port' => 3306,
     #         'role' => 'slave',
     #         'slave_since' => Time.at(1391803892),
     #         'public_ips' => ['203.0.113.5'],
@@ -255,7 +259,11 @@ module Rightscale
       else
         query_tag = ::MachineTag::Tag.machine_tag('database', 'active', true)
       end
-      required_tags(options, ::MachineTag::Tag.machine_tag('database', 'lineage', '*'))
+      required_tags(options,
+        ::MachineTag::Tag.machine_tag('database', 'lineage', '*'),
+        ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', '*'),
+        ::MachineTag::Tag.machine_tag('database', 'bind_port', '*')
+      )
 
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
@@ -266,7 +274,11 @@ module Rightscale
       end
 
       build_server_hash(servers) do |tags|
-        server_hash = {'lineage' => tags['database:lineage'].first.value}
+        server_hash = {
+          'lineage' => tags['database:lineage'].first.value,
+          'bind_ip_address' => tags['database:bind_ip_address'].first.value,
+          'bind_port' => tags['database:bind_port'].first.value.to_i,
+        }
         master_active = tags['database:master_active'].first
         slave_active = tags['database:slave_active'].first
 

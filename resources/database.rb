@@ -17,13 +17,28 @@
 # limitations under the License.
 #
 
+# The lineage of the database server
+attribute :lineage, :kind_of => String, :required => true
+
+# The bind IP address of the database
+attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks => {
+  'should be a valid IP address' => lambda do |ip_address|
+    require 'ipaddress'
+    begin
+      IPAddress.parse(ip_address)
+    rescue ArgumentError
+      false
+    end
+  end
+}
+
+# The bind port of the database
+attribute :bind_port, :kind_of => Fixnum, :required => true
+
 # The role of the database server. This attribute should only contain alphanumeric characters and underscores and
 # should start with a letter.
 #
 attribute :role, :kind_of => String, :regex => /^[a-z][a-z0-9_]*$/i, :name_attribute => true
-
-# The lineage of the database server
-attribute :lineage, :kind_of => String
 
 # The timestamp used to create the <role>_active tag. This tag represents that the server is in the specified role
 # since this timestamp
