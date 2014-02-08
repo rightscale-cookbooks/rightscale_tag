@@ -26,6 +26,7 @@ attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks =>
     require 'ipaddress'
     begin
       IPAddress.parse(ip_address)
+      true
     rescue ArgumentError
       false
     end
