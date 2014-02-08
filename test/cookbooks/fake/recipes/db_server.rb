@@ -21,6 +21,8 @@ delete = false
 
 # Database setup
 rightscale_tag_database 'master' do
+  bind_ip_address '10.0.0.2'
+  bind_port 3306
   lineage 'production'
   timestamp 1391473172
   action delete == true ? :delete : :create

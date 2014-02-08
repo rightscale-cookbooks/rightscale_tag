@@ -16,8 +16,8 @@ describe "Database server tags" do
   it "should have a private IP of 10.0.2.17" do
     db_tags['server:private_ip_0'].first.value.should match ('10.0.2.17')
   end
-  it "should have 3 application specific entries" do
-    db_tags['database'].length.should == 3
+  it "should have 5 application specific entries" do
+    db_tags['database'].length.should == 5
   end
   it "should be active" do
     db_tags['database:active'].first.value.should be_true
