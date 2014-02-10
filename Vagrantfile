@@ -96,7 +96,6 @@ Vagrant.configure("2") do |config|
 
     chef.run_list = [
         "recipe[rightscale_tag::default]",
-        "recipe[rightscale_tag::test]"
     ]
   end
 end
