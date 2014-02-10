@@ -18,7 +18,7 @@
 #
 
 # The lineage of the database server
-attribute :lineage, :kind_of => String, :required => true
+attribute :lineage, :kind_of => String, :name_attribute => true
 
 # The bind IP address of the database
 attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks => {
@@ -39,7 +39,7 @@ attribute :bind_port, :kind_of => Fixnum, :required => true
 # The role of the database server. This attribute should only contain alphanumeric characters and underscores and
 # should start with a letter.
 #
-attribute :role, :kind_of => String, :regex => /^[a-z][a-z0-9_]*$/i, :name_attribute => true
+attribute :role, :kind_of => String, :regex => /^[a-z][a-z0-9_]*$/i
 
 # The timestamp used to create the <role>_active tag. This tag represents that the server is in the specified role
 # since this timestamp
