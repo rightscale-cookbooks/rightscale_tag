@@ -19,6 +19,8 @@
 
 # The create action that creates required tags for a database server
 action :create do
+  require 'machine_tag'
+
   database_tags = [
     ::MachineTag::Tag.machine_tag('database', 'active', true),
     ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),
@@ -53,6 +55,8 @@ end
 
 # The delete action that removes the database specific tags from the server
 action :delete do
+  require 'machine_tag'
+
   database_tags = [
     ::MachineTag::Tag.machine_tag('database', 'active', true),
     ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),

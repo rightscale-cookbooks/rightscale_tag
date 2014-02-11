@@ -19,6 +19,8 @@
 
 # The create action that creates required tags for an application server
 action :create do
+  require 'machine_tag'
+
   [
     ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
     ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
@@ -32,6 +34,8 @@ end
 
 # The delete action that removes the application specific tags from the server
 action :delete do
+  require 'machine_tag'
+
   [
     ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
     ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
