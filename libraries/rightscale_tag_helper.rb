@@ -49,6 +49,8 @@ module Rightscale
     #     }
     #
     def self.find_load_balancer_servers(node, application_name = nil, options = {})
+      require 'machine_tag'
+
       required_tags(options)
 
       if application_name
@@ -132,6 +134,8 @@ module Rightscale
     #
     #
     def self.find_application_servers(node, application_name = nil, options = {})
+      require 'machine_tag'
+
       required_tags(options)
 
       if application_name
@@ -251,6 +255,8 @@ module Rightscale
     #     }
     #
     def self.find_database_servers(node, lineage = nil, role = nil, options = {})
+      require 'machine_tag'
+
       required_tags(options)
 
       if role
