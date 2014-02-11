@@ -39,7 +39,7 @@ action :create do
 
     file timestamp_file do
       action :create_if_missing
-      content "#{timestamp.to_i}"
+      content timestamp.to_i.to_s
     end
 
     database_tags << "database:#{new_resource.role}_active=#{timestamp.to_i}"
