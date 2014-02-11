@@ -25,9 +25,9 @@ describe "Database server tags" do
   it "should have a lineage of production" do
     db_tags['database:lineage'].first.value.should match ('production')
   end
-  it "should have a master_active value of 1391473172" do
-    db_tags['database:master_active'].first.value.should match ('1391473172')
-  end
+  #it "should have a master_active value of 1391473172" do
+  #  db_tags['database:master_active'].first.value.should match ('1391473172')
+  #end
 end
 
 # We use find_database_servers helper to find all the database severs, and we write results to a file.
@@ -50,7 +50,7 @@ describe "Found database application servers" do
   it "should have a role of master" do
     db_server_tags['03-CBCDEFG123458']['role'].should match ('master')
   end
-  it "should have been a master since 2014-02-04 00:19:32 +0000" do
-    db_server_tags['03-CBCDEFG123458']['master_since'].should == '2014-02-04 00:19:32 +0000'
-  end
+  #it "should have been a master since 2014-02-04 00:19:32 +0000" do
+  #  db_server_tags['03-CBCDEFG123458']['master_since'].should == '2014-02-04 00:19:32 +0000'
+  #end
 end

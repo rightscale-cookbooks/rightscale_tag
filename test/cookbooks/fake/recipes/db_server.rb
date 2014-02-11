@@ -24,7 +24,6 @@ rightscale_tag_database 'production' do
   bind_ip_address '10.0.0.2'
   bind_port 3306
   role 'master'
-  timestamp 1391473172
   action delete == true ? :delete : :create
 end
 

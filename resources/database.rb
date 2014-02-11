@@ -41,10 +41,6 @@ attribute :bind_port, :kind_of => Fixnum, :required => true
 #
 attribute :role, :kind_of => String, :regex => /^[a-z][a-z0-9_]*$/i
 
-# The timestamp used to create the <role>_active tag. This tag represents that the server is in the specified role
-# since this timestamp
-attribute :timestamp, :kind_of => [Time, Fixnum]
-
 # Creates the required tags for the database server
 actions :create
 
