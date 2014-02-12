@@ -51,12 +51,14 @@ There are no attributes in this cookbook.
 # Recipes
 
 ## `rightscale_tag::default`
-
-Sets the standard machine tags for a RightScale server which are `server:uuid`, `server:public_ip_X`, `server:private_ip_X` (where `X` is 0, 1, etc.).
+Sets the standard machine tags for a RightScale server which are `server:uuid`,
+`server:public_ip_X`, `server:private_ip_X` (where `X` is 0, 1, etc.).
 
 ## `rightscale_tag::monitoring`
 
-Sets the standard machine tag to enable RightScale monitoring which is `rs_monitoring:state=active`. This should only be set when `collectd` or equivalent is sending data to RightScale (for more information see [rs-base]).
+Sets the standard machine tag to enable RightScale monitoring which is
+`rs_monitoring:state=active`. This should only be set when `collectd` or
+equivalent is sending data to RightScale (for more information see [rs-base]).
 
 [rs-base]: https://github.com/rightscale-cookbooks/rs-base
 
@@ -164,7 +166,8 @@ A resource to create and remove tags to identify an application server.
 
 ## `rightscale_tag_database`
 
-A resource to create and remove tags to identify a database server including its role of master or slave.
+A resource to create and remove tags to identify a database server including its
+role of master or slave.
 
 ### Actions
 
@@ -215,7 +218,7 @@ A resource to create and remove tags to identify a database server including its
   </tr>
   <tr>
     <td><code>role</code></td>
-    <td>The role of the database; this can be <code>"master"</code> or <code>"slave"</code></td>
+    <td>The role of the database; this can be <code>'master'</code> or <code>'slave'</code></td>
     <td></td>
     <td>No</td>
   </tr>
@@ -223,11 +226,139 @@ A resource to create and remove tags to identify a database server including its
 
 # Helpers
 
+This cookbook also provides three helper methods for finding servers of each
+type. To use them in a recipe add the following:
+
+```ruby
+class Chef::Recipe
+  include RightScale::RightScaleTag
+end
+```
+
 ## `find_load_balancer_servers`
+
+Find load balancer servers using tags. This will find all active load balancer
+servers, or, if `application_name` is given, it will find all load balancer
+servers serving for that application.
+
+```ruby
+def find_load_balancer_servers(node, application_name = nil, options = {})
+```
+
+### Parameters
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <tr>
+    <td><code>node</code></td>
+    <td>the Chef node</td>
+    <td><code>Chef::Node</code></td>
+  </tr>
+  <tr>
+    <td><code>application_name</code></td>
+    <td>the name of the application served by load balancer servers to search for; this is an optional parameter</td>
+    <td><code>String</code></td>
+  </tr>
+  <tr>
+    <td><code>options</code></td>
+    <td>optional parameters</td>
+    <td><code>Hash</code></td>
+  </tr>
+  <tr>
+    <td><code>options[:query_timeout]</code></td>
+    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td><code>Integer</code></td>
+  </tr>
+</table>
 
 ## `find_application_servers`
 
+Find application servers using tags. This will find all active application
+servers, or, if `application_name` is given, it will find all application
+servers serving that application.
+
+```ruby
+def find_application_servers(node, application_name = nil, options = {})
+```
+
+### Parameters
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <tr>
+    <td><code>node</code></td>
+    <td>the Chef node</td>
+    <td><code>Chef::Node</code></td>
+  </tr>
+  <tr>
+    <td><code>application_name</code></td>
+    <td>the name of the application served by the application servers to search for; this is an optional parameter</td>
+    <td><code>String</code></td>
+  </tr>
+  <tr>
+    <td><code>options</code></td>
+    <td>optional parameters</td>
+    <td><code>Hash</code></td>
+  </tr>
+  <tr>
+    <td><code>options[:query_timeout]</code></td>
+    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td><code>Integer</code></td>
+  </tr>
+</table>
+
 ## `find_database_servers`
+
+Find database servers using tags. This will find all active database servers,
+or, if `lineage` is given, it will find all database servers for that linage,
+or, if `role` is specified it will find the database server(s) with that role.
+
+```ruby
+def find_database_servers(node, lineage = nil, role = nil, options = {})
+```
+
+### Parameters
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <tr>
+    <td><code>node</code></td>
+    <td>the Chef node</td>
+    <td><code>Chef::Node</code></td>
+  </tr>
+  <tr>
+    <td><code>lineage</code></td>
+    <td>the lineage of the database servers to search for; this is an optional parameter</td>
+    <td><code>String</code></td>
+  </tr>
+  <tr>
+    <td><code>role</code></td>
+    <td>the role of the database servers to search for; this should be <code>'master'</code> or <code>'slave'</code>; this is an optional parameter</td>
+    <td><code>String</code></td>
+  </tr>
+  <tr>
+    <td><code>options</code></td>
+    <td>optional parameters</td>
+    <td><code>Hash</code></td>
+  </tr>
+  <tr>
+    <td><code>options[:query_timeout]</code></td>
+    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td><code>Integer</code></td>
+  </tr>
+</table>
 
 # Usage
 
