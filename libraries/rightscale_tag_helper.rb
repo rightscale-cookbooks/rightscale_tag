@@ -98,7 +98,7 @@ module Rightscale
     # `application_name` is given, it will find all application servers serving that application.
     #
     # @param node [Chef::Node] the Chef node
-    # @param application_name [String, nil] the name of the application server by the application servers
+    # @param application_name [String, nil] the name of the application served by the application servers
     #   to search for
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
@@ -182,7 +182,7 @@ module Rightscale
     # `application_name` is given, it will find all application servers serving that application.
     #
     # @param node [Chef::Node] the Chef node
-    # @param application_name [String, nil] the name of the application server by the application servers
+    # @param application_name [String, nil] the name of the application served by the application servers
     #   to search for
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
