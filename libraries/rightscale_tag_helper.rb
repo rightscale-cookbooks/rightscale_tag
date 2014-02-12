@@ -201,8 +201,8 @@ module Rightscale
     #
     # @param node [Chef::Node] the Chef node
     # @param lineage [String] the lineage of the database servers to search for
-    # @param role [Symbol, String] the role of the database servers to search for; this should be `:master`
-    #   or `:slave`
+    # @param role [String] the role of the database servers to search for; this should be `'master'` or
+    #   `'slave'`
     #
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
     #
