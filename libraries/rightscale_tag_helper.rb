@@ -297,7 +297,7 @@ module Rightscale
             server_hash['master_since'] = master_since
           else
             server_hash['role'] = 'slave'
-            server_hash['slave_since]'] = slave_since
+            server_hash['slave_since'] = slave_since
           end
         elsif master_active
           server_hash['role'] = 'master'
