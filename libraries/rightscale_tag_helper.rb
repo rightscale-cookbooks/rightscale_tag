@@ -37,6 +37,7 @@ module Rightscale
     #     {
     #       '01-ABCDEF123456' => {
     #         'tags' => MachineTag::Set[
+    #           'load_balancer:active=true',
     #           'load_balancer:active_www=true',
     #           'server:public_ip_0=203.0.113.2',
     #           'server:private_ip_0=10.0.0.2',
@@ -112,6 +113,7 @@ module Rightscale
     #     {
     #       '01-ABCDEF7890123' => {
     #         'tags' => MachineTag::Set[
+    #           'application:active=true',
     #           'application:active_www=true',
     #           'application:bind_ip_address_www=10.0.0.3',
     #           'application:bind_port_www=8080',
