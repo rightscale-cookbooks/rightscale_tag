@@ -56,7 +56,7 @@ module Rightscale
       if application_name
         query_tag = ::MachineTag::Tag.machine_tag('load_balancer', "active_#{application_name}", true)
       else
-        query_tag = 'load_balancer:'
+        query_tag = 'load_balancer'
       end
 
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
@@ -146,7 +146,7 @@ module Rightscale
           ::MachineTag::Tag.machine_tag('application', "vhost_path_#{application_name}", '*')
         )
       else
-        query_tag = 'application:'
+        query_tag = 'application'
       end
 
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
