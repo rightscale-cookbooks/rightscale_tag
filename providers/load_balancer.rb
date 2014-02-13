@@ -21,7 +21,12 @@
 action :create do
   require 'machine_tag'
 
-  machine_tag ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true)
+  [
+    ::MachineTag::Tag.machine_tag('load_balancer', "active", true),
+    ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true)
+  ].each do |tag|
+    machine_tag tag
+  end
   new_resource.updated_by_last_action(true)
 end
 
@@ -29,7 +34,11 @@ end
 action :delete do
   require 'machine_tag'
 
-  machine_tag ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true) do
+  [
+    ::MachineTag::Tag.machine_tag('load_balancer', "active", true),
+    ::MachineTag::Tag.machine_tag('load_balancer', "active_#{new_resource.application_name}", true)
+  ].each do |tag|
+    machine_tag tag
     action :delete
   end
   new_resource.updated_by_last_action(true)

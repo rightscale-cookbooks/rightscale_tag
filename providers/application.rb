@@ -22,6 +22,7 @@ action :create do
   require 'machine_tag'
 
   [
+    ::MachineTag::Tag.machine_tag('application', "active", true),
     ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
     ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
     ::MachineTag::Tag.machine_tag('application', "bind_port_#{new_resource.application_name}", new_resource.bind_port),
@@ -37,6 +38,7 @@ action :delete do
   require 'machine_tag'
 
   [
+    ::MachineTag::Tag.machine_tag('application', "active", true),
     ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
     ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
     ::MachineTag::Tag.machine_tag('application', "bind_port_#{new_resource.application_name}", new_resource.bind_port),

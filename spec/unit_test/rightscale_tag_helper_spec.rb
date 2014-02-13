@@ -40,6 +40,7 @@ describe Rightscale::RightscaleTag do
     let(:load_balancer_1) do
       MachineTag::Set[
         'server:uuid=01-83PJQDO8911IT',
+        'load_balancer:active=true',
         'load_balancer:active_www=true',
         'load_balancer:active_api=true',
         'server:public_ip_0=157.56.165.202',
@@ -51,6 +52,7 @@ describe Rightscale::RightscaleTag do
     let(:load_balancer_2) do
       MachineTag::Set[
         'server:uuid=01-83PJQDO8922IT',
+        'load_balancer:active=true',
         'load_balancer:active_api=true',
         'server:public_ip_0=157.56.166.202',
         'server:public_ip_1=157.56.166.203',
@@ -64,7 +66,7 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags from all load balancer servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'load_balancer:', {:required_tags => Set['server:uuid']}
+          node, 'load_balancer:active=true', {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node)
 
@@ -120,6 +122,7 @@ describe Rightscale::RightscaleTag do
     let(:application_server_1) do
       MachineTag::Set[
         'server:uuid=01-83PJQDO8911IT',
+        'application:active=true',
         'application:active_www=true',
         'application:active_api=true',
         'application:bind_ip_address_www=157.56.165.202',
@@ -137,6 +140,7 @@ describe Rightscale::RightscaleTag do
     let(:application_server_2) do
       MachineTag::Set[
         'server:uuid=01-83PJQDO8922IT',
+        'application:active=true',
         'application:active_api=true',
         'application:bind_ip_address_api=157.56.166.202',
         'application:bind_port_api=443',
@@ -177,7 +181,7 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of all application servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'application:',
+          node, 'application:active=true',
           {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_application_servers(node)

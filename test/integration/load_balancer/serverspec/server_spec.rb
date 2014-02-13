@@ -16,10 +16,11 @@ describe "Load balancer server tags" do
   it "should have a private IP of 10.0.2.16" do
     lb_tags['server:private_ip_0'].first.value.should match ('10.0.2.16')
   end
-  it "should have 1 application specific entry" do
-    lb_tags['load_balancer'].length.should == 1
+  it "should have 2 application specific entry" do
+    lb_tags['load_balancer'].length.should == 2
   end
-  it "should have an active API" do
+  it "should be active" do
+    lb_tags['load_balancer:active'].should be_true
     lb_tags['load_balancer:active_api'].should be_true
   end
 end

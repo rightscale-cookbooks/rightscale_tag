@@ -16,10 +16,11 @@ describe "Application (www) server tags" do
   it "should have a private IP of" do
     app_tags['server:private_ip_0'].first.value.should match ('10.0.2.15')
   end
-  it "should have 4 application specific entries" do
-    app_tags['application'].length.should == 4
+  it "should have 5 application specific entries" do
+    app_tags['application'].length.should == 5
   end
   it "should be active" do
+    app_tags['application:active'].first.value.should be_true
     app_tags['application:active_www'].first.value.should be_true
   end
   it "should have an IP of 10.0.0.1" do
