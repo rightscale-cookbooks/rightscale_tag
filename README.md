@@ -2,11 +2,14 @@
 
 [![Build Status](https://travis-ci.org/rightscale-cookbooks/rightscale_tag.png?branch=master)](https://travis-ci.org/rightscale-cookbooks/rightscale_tag)
 
-This cookbook provides recipes and library methods for dealing with machine tags
-in RightScale. It builds on the resources and library methods in the
-[machine_tag] cookbook and provides a higher level set of functionality dealing
-specifically with RightScale. In the future it will include support for defining
-a 3-tier web application architecture on RightScale with machine tags.
+This cookbook provides recipes, resources, providers, and library methods for
+dealing with machine tags in RightScale. It builds on the resources and library
+methods in the [machine_tag] cookbook and provides a higher level set of
+functionality dealing specifically with RightScale. There are resources,
+providers, and library methods for definign a 3-tier web application consisting
+of load balancer, application, and database servers. The resources and providers
+allow for setting up tags on the respective servers while the helper methods can
+be used by other servers needing to find them.
 
 For information about some of the machine tags used by this cookbook, see [List
 of Instance RightScale Tags].
@@ -44,6 +47,43 @@ or, alternatively, used with `include_recipe` at the end of a recipe doing that.
 Please see the [rs-base] cookbook for how these recipes are used in RightScale
 ServerTemplates.
 
+[rs-base]: https://github.com/rightscale-cookbooks/rs-base
+
+## 3-Tier Web Applications
+
+This cookbook supports building a 3-tier web application deployment architecture
+by providing an interface with tags on servers that can be set up with resources
+and providers and searched for using helper methods. For a complete
+implementation of a 3-tier LAMP stack using this cookbook, please see the
+[rs-haproxy], [rs-application_php], and [rs-mysql] cookbooks.
+
+[rs-haproxy]: https://github.com/rightscale-cookbooks/rs-haproxy
+[rs-application_php]: https://github.com/rightscale-cookbooks/rs-application_php
+[rs-mysql]: https://github.com/rightscale-cookbooks/rs-mysql
+
+### Load Balancer Servers
+
+================================================================================
+
+* **`load_balancer:active_<application_name>=true`** - specifies an application that the load balancer server serves; examples: `load_balancer:active_api=true`, `load_balancer:active_www=true`
+
+### Application Servers
+
+================================================================================
+
+* **`application:active_<application_name>=true`** - specifies an application that the application server serves; examples: `application:active_api=true`, `application:active_www=true`
+* **`application:bind_ip_address_<application_name>=<ip_address>`** - specifies the bind IP address of the application server; examples: `application:bind_ip_address_api=192.0.2.1`, `application:bind_ip_address_www=192.0.2.2`
+* **`application:bind_port_<application_name>=<port>`** - specifies the bind port of the application server; examples: `application:bind_port_api=8080`, `application:bind_port_www=8080`
+* **`application:vhost_path_<application_name=<vhost/path>`** - specifies the vhost or path name the application serves; examples: `application:vhost_path_api=api.example.com`, `application:vhost_path_www=/`
+
+### Database Servers
+
+================================================================================
+
+* **`database:active=true`** - specifies that a server is an active database server
+* **`database:lineage=<lineage>`** - specifies the lineage of the database server; example: `database:lineage=production`
+* **`database:master_active=<timestamp>`** - specifies that the database server is an active master since timestamp
+
 # Attributes
 
 There are no attributes in this cookbook.
@@ -59,8 +99,6 @@ Sets the standard machine tags for a RightScale server which are `server:uuid`,
 Sets the standard machine tag to enable RightScale monitoring which is
 `rs_monitoring:state=active`. This should only be set when `collectd` or
 equivalent is sending data to RightScale (for more information see [rs-base]).
-
-[rs-base]: https://github.com/rightscale-cookbooks/rs-base
 
 # Resources/Providers
 
@@ -78,12 +116,12 @@ A resource to create and remove tags to identify a load balancer server.
   </tr>
   <tr>
     <td><code>:create</code></td>
-    <td>Creates the tags required for the load balancer server</td>
-    <td>Yes</td>
+    <td>creates the tags required for the load balancer server</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>:delete</code></td>
-    <td>Removes the tags from the load balancer server</td>
+    <td>removes the tags from the load balancer server</td>
     <td></td>
   </tr>
 </table>
@@ -99,9 +137,9 @@ A resource to create and remove tags to identify a load balancer server.
   </tr>
   <tr>
     <td><code>application_name</code></td>
-    <td>The name of the application the load balancer will serve</td>
+    <td>the name of the application the load balancer will serve</td>
     <td><code>name</code></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
 </table>
 
@@ -119,12 +157,12 @@ A resource to create and remove tags to identify an application server.
   </tr>
   <tr>
     <td><code>:create</code></td>
-    <td>Creates the tags required for the application server</td>
-    <td>Yes</td>
+    <td>creates the tags required for the application server</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>:delete</code></td>
-    <td>Removes the tags from the application server</td>
+    <td>removes the tags from the application server</td>
     <td></td>
   </tr>
 </table>
@@ -140,27 +178,27 @@ A resource to create and remove tags to identify an application server.
   </tr>
   <tr>
     <td><code>application_name</code></td>
-    <td>The name of the application</td>
+    <td>the name of the application</td>
     <td><code>name</code></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>bind_ip_address</code></td>
-    <td>The IP address the application is bound to</td>
+    <td>the IP address the application is bound to</td>
     <td></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>bind_port</code></td>
-    <td>The port the application is bound to</td>
+    <td>the port the application is bound to</td>
     <td></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>vhost_path</code></td>
-    <td>The vhost or path of the application</td>
+    <td>the vhost or path of the application</td>
     <td></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
 </table>
 
@@ -179,12 +217,12 @@ role of master or slave.
   </tr>
   <tr>
     <td><code>:create</code></td>
-    <td>Creates the tags required for the database server</td>
-    <td>Yes</td>
+    <td>creates the tags required for the database server</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>:delete</code></td>
-    <td>Removes the tags from the database server</td>
+    <td>removes the tags from the database server</td>
     <td></td>
   </tr>
 </table>
@@ -200,27 +238,27 @@ role of master or slave.
   </tr>
   <tr>
     <td><code>lineage</code></td>
-    <td>The lineage of the database</td>
+    <td>the lineage of the database</td>
     <td><code>name</code></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>bind_ip_address</code></td>
-    <td>The IP address the database is bound to</td>
+    <td>the IP address the database is bound to</td>
     <td></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>bind_port</code></td>
-    <td>The port the database is bound to</td>
+    <td>the port the database is bound to</td>
     <td></td>
-    <td>Yes</td>
+    <td>yes</td>
   </tr>
   <tr>
     <td><code>role</code></td>
-    <td>The role of the database; this can be <code>'master'</code> or <code>'slave'</code></td>
+    <td>the role of the database; this can be <code>'master'</code> or <code>'slave'</code></td>
     <td></td>
-    <td>No</td>
+    <td>no</td>
   </tr>
 </table>
 
@@ -359,8 +397,6 @@ def find_database_servers(node, lineage = nil, role = nil, options = {})
     <td><code>Integer</code></td>
   </tr>
 </table>
-
-# Usage
 
 # Author
 
