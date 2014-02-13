@@ -317,6 +317,43 @@ describe Rightscale::RightscaleTag do
       end
     end
 
+    context 'when a server has both master and slave tags' do
+      let(:database_master_with_slave_tag) do
+        MachineTag::Set[*database_master, 'database:slave_active=1391802974']
+      end
+
+      let(:database_slave_with_master_tag) do
+        MachineTag::Set[*database_slave, 'database:master_active=1391803832']
+      end
+
+      let(:tags) do
+        [database_master_with_slave_tag, database_slave_with_master_tag]
+      end
+
+      it 'returns role of the latest tag' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'database:active=true',
+          {:required_tags => Set[
+            'server:uuid',
+            'database:lineage=*',
+            'database:bind_ip_address=*',
+            'database:bind_port=*',
+          ]}
+        ).and_return(tags)
+        response = fake.find_database_servers(node)
+
+        response['01-83PJQDO8911IT']['tags'].should eq(database_master_with_slave_tag)
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['slave_since'].should be_nil
+
+        response['01-83PJQDO8922IT']['tags'].should eq(database_slave_with_master_tag)
+        response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['master_since'].should be_nil
+      end
+    end
+
     context 'when the database lineage is given and the role is not given' do
       let(:tags) do
         [database_master, database_slave]
