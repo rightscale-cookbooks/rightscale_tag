@@ -206,6 +206,7 @@ module Rightscale
     # @param role [String] the role of the database servers to search for; this should be `'master'` or
     #   `'slave'`
     #
+    # @option options [Boolean] :only_latest_for_role (false) only return the latest server tagged for a role
     # @option options [Integer] :query_timeout (120) the seconds to timeout for the query operation
     #
     # @return [Mash] a hash with server UUIDs as keys and server information hashes as values
@@ -259,6 +260,7 @@ module Rightscale
     def self.find_database_servers(node, lineage = nil, role = nil, options = {})
       require 'machine_tag'
 
+      only_latest_for_role = options.delete(:only_latest_for_role)
       required_tags(options)
 
       if role
@@ -281,7 +283,7 @@ module Rightscale
         end
       end
 
-      build_server_hash(servers) do |tags|
+      server_hashes = build_server_hash(servers) do |tags|
         server_hash = {
           'lineage' => tags['database:lineage'].first.value,
           'bind_ip_address' => tags['database:bind_ip_address'].first.value,
@@ -311,6 +313,26 @@ module Rightscale
 
         server_hash
       end
+
+      if only_latest_for_role
+        server_hashes = server_hashes.sort_by {|_, server_hash| server_hash['lineage']}.chunk do |_, server_hash|
+          server_hash['lineage']
+        end.map do |lineage, server_hashes|
+          server_hashes.sort_by {|_, server_hash| server_hash['role'] || ''}.chunk do |_, server_hash|
+            server_hash['role'] || ''
+          end.map do |role, server_hashes|
+            if role.empty?
+              server_hashes
+            else
+              [server_hashes.max_by {|uuid, server_hash| server_hash["#{role}_since"]}]
+            end
+          end
+        end
+
+        server_hashes = Mash.from_hash(Hash[server_hashes.flatten(2)])
+      end
+
+      server_hashes
     end
 
     # Find database servers using tags. This will find all active database servers, or, if `lineage` is

@@ -284,9 +284,45 @@ describe Rightscale::RightscaleTag do
       ]
     end
 
+    let(:database_master_2) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8933IT',
+        'database:active=true',
+        'database:master_active=1391802023',
+        'database:lineage=example',
+        'database:bind_ip_address=10.0.0.2',
+        'database:bind_port=3306',
+        'server:private_ip_0=10.0.0.2',
+        'server:public_ip_0=157.56.165.204',
+      ]
+    end
+
+    let(:database_slave_2) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8944IT',
+        'database:active=true',
+        'database:slave_active=1391803781',
+        'database:lineage=example',
+        'database:bind_ip_address=157.56.166.204',
+        'database:bind_port=3306',
+        'server:public_ip_0=157.56.166.204',
+      ]
+    end
+
+    let(:database_standalone) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8955IT',
+        'database:active=true',
+        'database:lineage=example',
+        'database:bind_ip_address=10.0.0.3',
+        'database:bind_port=3306',
+        'server:private_ip_0=10.0.0.3',
+      ]
+    end
+
     context 'when no database role or lineage is specified' do
       let(:tags) do
-        [database_master, database_slave]
+        [database_master, database_slave, database_standalone]
       end
 
       it 'returns tags of all database servers' do
@@ -301,12 +337,15 @@ describe Rightscale::RightscaleTag do
         ).and_return(tags)
         response = fake.find_database_servers(node)
 
+        response.keys.should match_array(['01-83PJQDO8911IT', '01-83PJQDO8922IT', '01-83PJQDO8955IT'])
+
         response['01-83PJQDO8911IT']['tags'].should eq(database_master)
         response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT'].should_not include('slave_since')
         response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
         response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
 
@@ -315,9 +354,42 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
+        response['01-83PJQDO8922IT'].should_not include('master_since')
         response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
         response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
         response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
+
+        response['01-83PJQDO8955IT']['tags'].should eq(database_standalone)
+        response['01-83PJQDO8955IT']['private_ips'].should eq(['10.0.0.3'])
+        response['01-83PJQDO8955IT']['public_ips'].should eq([])
+        response['01-83PJQDO8955IT']['lineage'].should eq('example')
+        response['01-83PJQDO8955IT'].should_not include('role', 'master_since', 'slave_since')
+        response['01-83PJQDO8955IT']['bind_ip_address'].should eq('10.0.0.3')
+        response['01-83PJQDO8955IT']['bind_port'].should eq(3306)
+      end
+
+      context 'when only_latest_for_role is true' do
+        let(:tags) do
+          [database_master, database_slave, database_master_2, database_slave_2, database_standalone]
+        end
+
+        it 'returns only the latest masters and slaves and any standalones' do
+          Chef::MachineTagHelper.should_receive(:tag_search).with(
+            node, 'database:active=true',
+            {:required_tags => Set[
+              'server:uuid',
+              'database:lineage=*',
+              'database:bind_ip_address=*',
+              'database:bind_port=*',
+            ]}
+          ).and_return(tags)
+          response = fake.find_database_servers(node, nil, nil, only_latest_for_role: true)
+
+          response.keys.should match_array(['01-83PJQDO8911IT', '01-83PJQDO8922IT', '01-83PJQDO8955IT'])
+          response['01-83PJQDO8911IT']['tags'].should eq(database_master)
+          response['01-83PJQDO8922IT']['tags'].should eq(database_slave)
+          response['01-83PJQDO8955IT']['tags'].should eq(database_standalone)
+        end
       end
     end
 

@@ -265,7 +265,7 @@ class Chef::Recipe
   include Rightscale::RightscaleTag
 end
 
-db_servers = find_database_servers(node, 'staging', 'master')
+db_servers = find_database_servers(node, 'staging', 'master', only_latest_for_role: true)
 
 # db_servers will be a hash with content like:
 #   {
@@ -603,6 +603,11 @@ def find_database_servers(node, lineage = nil, role = nil, options = {})
     <td><code>options</code></td>
     <td>optional parameters</td>
     <td><code>Hash</code></td>
+  </tr>
+  <tr>
+    <td><code>options[:only_latest_for_role]</code></td>
+    <td>only return the latest server tagged for a role; the default is `false`</td>
+    <td><code>Boolean</code></td>
   </tr>
   <tr>
     <td><code>options[:query_timeout]</code></td>
