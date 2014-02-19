@@ -19,12 +19,11 @@
 
 delete = false
 
-# Application test setup. We are only using www and not both www and api so the latter doesn't pollute the tag data
 rightscale_tag_application 'www' do
   bind_ip_address '10.0.0.1'
   bind_port 8080
   vhost_path 'www.example.com'
-  action delete == true ? :delete : :create
+  action :create
 end
 
 # Use find_application_servers helper method and write it to a JSON file so the kitchen test can access it
@@ -35,7 +34,7 @@ end
 
 ruby_block "Find application servers" do
   block do
-    File.open("/tmp/found_app_servers.json", "w") do |file|
+    ::File.open("/tmp/found_app_servers.json", "w") do |file|
       file.write find_application_servers(node, "www").to_json
     end
   end

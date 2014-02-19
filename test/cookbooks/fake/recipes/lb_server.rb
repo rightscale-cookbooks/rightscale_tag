@@ -22,7 +22,7 @@ delete = false
 # Load balancer setup. We are only using api and not both api and www so the latter doesn't pollute the tag data
 rightscale_tag_load_balancer 'api server' do
   application_name 'api'
-  action delete == true ? :delete : :create
+  action :create
 end
 
 # Use find_load_balancer_servers helper method and write it to a JSON file so the kitchen tests can access it

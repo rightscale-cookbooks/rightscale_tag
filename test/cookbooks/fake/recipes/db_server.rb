@@ -24,10 +24,10 @@ rightscale_tag_database 'production' do
   bind_ip_address '10.0.0.2'
   bind_port 3306
   role 'master'
-  action delete == true ? :delete : :create
+  action :create
 end
 
-# Use the find_database_server helper method and write it to a JSON file so the kitchen tests can access it
+# Use the find_database_servers helper method and write it to a JSON file so the kitchen tests can access it
 
 class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
