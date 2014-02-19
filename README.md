@@ -6,7 +6,7 @@ This cookbook provides recipes, resources, providers, and library methods for
 dealing with machine tags in RightScale. It builds on the resources and library
 methods in the [machine_tag] cookbook and provides a higher level set of
 functionality dealing specifically with RightScale. There are resources,
-providers, and library methods for definign a 3-tier web application consisting
+providers, and library methods for defining a 3-tier web application consisting
 of load balancer, application, and database servers. The resources and providers
 allow for setting up tags on the respective servers while the helper methods can
 be used by other servers needing to find them.
