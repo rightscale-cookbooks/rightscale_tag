@@ -370,6 +370,75 @@ module Rightscale
       Rightscale::RightscaleTag.find_database_servers(node, lineage, role, options)
     end
 
+    # Groups the application servers hash returned by find_application_servers
+    # method based on application names.
+    #
+    # @param servers [Hash{String, Hash}] the application servers hash
+    #
+    # @return [Hash] the pools hash with pool name as the key and the server hash
+    #    as value
+    #
+    # @example
+    #
+    #   # Given the application servers hash as below
+    #
+    #   {
+    #     '01-ABCDEF7890123' => {
+    #       'applications' => {
+    #         'www' => {
+    #           'bind_ip_address' => '10.0.0.3',
+    #           'bind_port' => 8080,
+    #           'vhost_path' => '/',
+    #         }
+    #       },
+    #       'public_ips' => ['203.0.113.3'],
+    #       'private_ips' => ['10.0.0.3']
+    #     },
+    #     '01-EDFHG9876DFG' => {
+    #       'applications' => {
+    #         'api' => {
+    #           'bind_ip_address' => '10.0.0.3',
+    #           'bind_port' => 8080,
+    #           'vhost_path' => '/',
+    #         }
+    #       },
+    #       'public_ips' => ['8.0.13.3'],
+    #       'private_ips' => ['10.0.0.3']
+    #     }
+    #   }
+    #
+    #   # This method returns
+    #
+    #   {
+    #     'www' => {
+    #       '01-ABCDEF7890123' => {
+    #         'bind_ip_address' => '10.0.0.3',
+    #         'bind_port' => 8080,
+    #         'vhost_path' => '/',
+    #       }
+    #     }
+    #     'api' => {
+    #       {
+    #         '01-EDFHG9876DFG' => {
+    #           'bind_ip_address' => '10.0.0.3',
+    #           'bind_port' => 8080,
+    #           'vhost_path' => '/',
+    #         }
+    #       }
+    #     ]
+    #   }
+    #
+    def self.group_servers_by_application_name(servers)
+      pools_hash = {}
+      servers.each do |server_uuid, server_hash|
+        server_hash['applications'].each do |app_name, app_hash|
+          pools_hash[app_name] ||= {}
+          pools_hash[app_name][server_uuid] = app_hash
+        end
+      end
+      pools_hash
+    end
+
     private
 
     # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various

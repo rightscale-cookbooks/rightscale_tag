@@ -754,4 +754,98 @@ describe Rightscale::RightscaleTag do
       end
     end
   end
+
+  describe '.group_servers_by_application_name' do
+    let(:application_server_1) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8911IT',
+        'application:active=true',
+        'application:active_www=true',
+        'application:active_api=true',
+        'application:bind_ip_address_www=157.56.165.202',
+        'application:bind_ip_address_api=157.56.165.203',
+        'application:bind_port_www=80',
+        'application:bind_port_api=80',
+        'application:vhost_path_www=/',
+        'application:vhost_path_api=api.example.com',
+        'server:public_ip_0=157.56.165.202',
+        'server:public_ip_1=157.56.165.203',
+        'server:private_ip_0=10.0.0.1',
+      ]
+    end
+
+    let(:application_server_2) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8922IT',
+        'application:active=true',
+        'application:active_api=true',
+        'application:bind_ip_address_api=157.56.166.202',
+        'application:bind_port_api=443',
+        'application:vhost_path_api=api.example.com',
+        'server:public_ip_0=157.56.166.202',
+        'server:public_ip_1=157.56.166.203',
+      ]
+    end
+
+    let(:www_attributes_1) do
+      Mash.from_hash(
+        'bind_ip_address' => '157.56.165.202',
+        'bind_port' => 80,
+        'vhost_path' => '/'
+      )
+    end
+
+    let(:api_attributes_1) do
+      Mash.from_hash(
+        'bind_ip_address' => '157.56.165.203',
+        'bind_port' => 80,
+        'vhost_path' => 'api.example.com'
+      )
+    end
+
+    let(:api_attributes_2) do
+      Mash.from_hash(
+        'bind_ip_address' => '157.56.166.202',
+        'bind_port' => 443,
+        'vhost_path' => 'api.example.com'
+      )
+    end
+
+    context 'when application servers exist' do
+      let(:tags) do
+        [application_server_1, application_server_2]
+      end
+
+      it 'groups application servers by application name' do
+        Chef::MachineTagHelper.should_receive(:tag_search).with(
+          node, 'application:active=true',
+          {:required_tags => Set['server:uuid']}
+        ).and_return(tags)
+        servers = fake.find_application_servers(node)
+        response = Rightscale::RightscaleTag::group_servers_by_application_name(servers)
+
+        response.should be_kind_of(Hash)
+
+        response.should include('www')
+        response['www'].should include('01-83PJQDO8911IT')
+        response['www']['01-83PJQDO8911IT'].should eq(www_attributes_1)
+
+        response.should include('api')
+        response['api'].should include('01-83PJQDO8922IT')
+        response['api']['01-83PJQDO8922IT'].should eq(api_attributes_2)
+
+        response['api'].should include('01-83PJQDO8911IT')
+        response['api']['01-83PJQDO8911IT'].should eq(api_attributes_1)
+      end
+    end
+  end
+
+  context 'when no application servers exists' do
+    it 'should return an empty Hash' do
+      response = Rightscale::RightscaleTag::group_servers_by_application_name(Mash.new)
+
+      response.should be_kind_of(Hash)
+      response.should be_empty
+    end
+  end
 end
