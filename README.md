@@ -21,6 +21,7 @@ Github Repository: [https://github.com/rightscale-cookbooks/rightscale_tag](http
 # Requirements
 
 * Requires Chef 11 or higher
+* Requires Ruby 1.9 or higher
 * Platform
   * Ubuntu 12.04
   * CentOS 6.4
@@ -28,16 +29,16 @@ Github Repository: [https://github.com/rightscale-cookbooks/rightscale_tag](http
   * [machine_tag]
   * [marker]
 
-[machine_tag]: https://github.com/rightscale-cookbooks/machine_tag
-[marker]: https://github.com/rightscale-cookbooks/marker
+[machine_tag]: http://community.opscode.com/cookbooks/machine_tag
+[marker]: http://community.opscode.com/cookbooks/marker
 
 # Usage
 
 On a RightScale server, add `rightscale_tag::default` to the run list. This will
 use the `node['rightscale']['instance_uuid']` attribute to create the
 `server:uuid` tag and the `node['cloud']['public_ips']` and
-`node['cloud']['private_ips']`values  that come from the Ohai cloud plugin to
-pupulate the `server:public_ip_X` and `server:private_ip_X` tags (where `X` is 
+`node['cloud']['private_ips']` values  that come from the Ohai cloud plugin to
+pupulate the `server:public_ip_X` and `server:private_ip_X` tags (where `X` is
 0, 1, etc.).
 
 The `rightscale_tag::monitoring` recipe should be placed in the run list after a
@@ -65,7 +66,7 @@ implementation of a 3-tier LAMP stack using this cookbook, please see the
 
 The tags used for load balancer servers are as follows:
 
-* **`load_balancer:active=true`** - specifies that that the load balancer server
+* **`load_balancer:active=true`** - specifies that the load balancer server
   is active
 * **`load_balancer:active_<application_name>=true`** - specifies an application
   that the load balancer server serves; examples:
@@ -172,7 +173,7 @@ end
 ```
 
 The [`find_application_servers`] method can be used to find tagged application
-servers. For example, to find application servers for the `www`application in a
+servers. For example, to find application servers for the `www` application in a
 Chef recipe:
 
 ```ruby
@@ -521,7 +522,7 @@ def find_load_balancer_servers(node, application_name = nil, options = {})
   </tr>
   <tr>
     <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
     <td><code>Integer</code></td>
   </tr>
 </table>
@@ -561,7 +562,7 @@ def find_application_servers(node, application_name = nil, options = {})
   </tr>
   <tr>
     <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
     <td><code>Integer</code></td>
   </tr>
 </table>
@@ -606,12 +607,12 @@ def find_database_servers(node, lineage = nil, role = nil, options = {})
   </tr>
   <tr>
     <td><code>options[:only_latest_for_role]</code></td>
-    <td>only return the latest server tagged for a role; the default is `false`</td>
+    <td>only return the latest server tagged for a role; the default is <code>false</code></td>
     <td><code>Boolean</code></td>
   </tr>
   <tr>
     <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is `120`</td>
+    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
     <td><code>Integer</code></td>
   </tr>
 </table>

@@ -66,7 +66,9 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags from all load balancer servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'load_balancer:active=true', {:required_tags => Set['server:uuid']}
+          node,
+          'load_balancer:active=true',
+          {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node)
 
@@ -91,7 +93,9 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags from the matching load balancer server' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'load_balancer:active_www=true', {:required_tags => Set['server:uuid']}
+          node,
+          'load_balancer:active_www=true',
+          {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node, 'www')
 
@@ -108,7 +112,9 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'load_balancer:active_www=true', {:required_tags => Set['server:uuid']}
+          node,
+          'load_balancer:active_www=true',
+          {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node, 'www')
 
@@ -181,7 +187,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of all application servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'application:active=true',
+          node,
+          'application:active=true',
           {:required_tags => Set['server:uuid']}
         ).and_return(tags)
         response = fake.find_application_servers(node)
@@ -209,7 +216,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of matching application servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'application:active_www=true',
+          node,
+          'application:active_www=true',
           {:required_tags => Set[
             'server:uuid',
             'application:bind_ip_address_www=*',
@@ -240,7 +248,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'application:active_www=true',
+          node,
+          'application:active_www=true',
           {:required_tags => Set[
             'server:uuid',
             'application:bind_ip_address_www=*',
@@ -327,7 +336,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of all database servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:active=true',
+          node,
+          'database:active=true',
           {:required_tags => Set[
             'server:uuid',
             'database:lineage=*',
@@ -375,7 +385,8 @@ describe Rightscale::RightscaleTag do
 
         it 'returns only the latest masters and slaves and any standalones' do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
-            node, 'database:active=true',
+            node,
+            'database:active=true',
             {:required_tags => Set[
               'server:uuid',
               'database:lineage=*',
@@ -408,7 +419,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns role of the latest tag' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:active=true',
+          node,
+          'database:active=true',
           {:required_tags => Set[
             'server:uuid',
             'database:lineage=*',
@@ -437,7 +449,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of all database servers' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:active=true',
+          node,
+          'database:active=true',
           {:required_tags => Set[
             'server:uuid',
             'database:lineage=*',
@@ -480,7 +493,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash when the lineage is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:active=true',
+          node,
+          'database:active=true',
           {:required_tags => Set[
             'server:uuid',
             'database:lineage=*',
@@ -501,7 +515,8 @@ describe Rightscale::RightscaleTag do
 
         it 'returns only the latest masters and slaves and any standalones' do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
-            node, 'database:active=true',
+            node,
+            'database:active=true',
             {:required_tags => Set[
               'server:uuid',
               'database:lineage=*',
@@ -522,7 +537,8 @@ describe Rightscale::RightscaleTag do
     context 'when the database role is given and the lineage is not given' do
       it 'returns tags of the master database server' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:master_active=*',
+          node,
+          'database:master_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -545,7 +561,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of the slave database server' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:slave_active=*',
+          node,
+          'database:slave_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -568,7 +585,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash when the role is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:undefined_active=*',
+          node,
+          'database:undefined_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -590,7 +608,8 @@ describe Rightscale::RightscaleTag do
 
         it 'returns only the latest master' do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
-            node, 'database:master_active=*',
+            node,
+            'database:master_active=*',
             {:required_tags => Set[
               'server:uuid',
               'database:active=true',
@@ -610,7 +629,8 @@ describe Rightscale::RightscaleTag do
     context 'when the database role and lineage is given' do
       it 'returns tags of the master database server matching example as lineage' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:master_active=*',
+          node,
+          'database:master_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -633,7 +653,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns tags of the slave database server matching example as lineage' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:slave_active=*',
+          node,
+          'database:slave_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -656,7 +677,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash when the role is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:undefined_active=*',
+          node,
+          'database:undefined_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -673,7 +695,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash when the lineage is not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:master_active=*',
+          node,
+          'database:master_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -690,7 +713,8 @@ describe Rightscale::RightscaleTag do
 
       it 'returns an empty Mash when both role and lineage are not available' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
-          node, 'database:undefined_active=*',
+          node,
+          'database:undefined_active=*',
           {:required_tags => Set[
             'server:uuid',
             'database:active=true',
@@ -712,7 +736,8 @@ describe Rightscale::RightscaleTag do
 
         it 'returns only the latest slave' do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
-            node, 'database:slave_active=*',
+            node,
+            'database:slave_active=*',
             {:required_tags => Set[
               'server:uuid',
               'database:active=true',

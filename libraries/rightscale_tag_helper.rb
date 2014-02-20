@@ -60,6 +60,9 @@ module Rightscale
         query_tag = ::MachineTag::Tag.machine_tag('load_balancer', 'active', true)
       end
 
+      # Performs a tag search for load balancer servers with given attributes.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_searchnode-query-options-- for more information
+      # about this helper method.
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       unless application_name
@@ -68,6 +71,7 @@ module Rightscale
         end
       end
 
+      # Builds a Hash with server information obtained from each server from their tags.
       build_server_hash(servers) do |tags|
         application_names = tags[/^load_balancer:active_.+$/].map do |tag|
           next if tag.value != 'true'
@@ -151,6 +155,9 @@ module Rightscale
         query_tag = ::MachineTag::Tag.machine_tag('application', 'active', true)
       end
 
+      # Performs a tag search for application servers with given attributes.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_searchnode-query-options-- for more information
+      # about this helper method.
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       unless application_name
@@ -159,6 +166,7 @@ module Rightscale
         end
       end
 
+      # Builds a Hash with server information obtained from each server from their tags.
       build_server_hash(servers) do |tags|
         application_hashes = tags[/^application:active_.+$/].map do |tag|
           next if tag.value != 'true'
@@ -169,7 +177,7 @@ module Rightscale
           bind_port = tags['application', "bind_port_#{application_name}"].first
           vhost_path = tags['application', "vhost_path_#{application_name}"].first
 
-          application_hash['bind_ip_address'] = bind_ip_address.value if  bind_ip_address
+          application_hash['bind_ip_address'] = bind_ip_address.value if bind_ip_address
           application_hash['bind_port'] = bind_port.value.to_i if bind_port
           application_hash['vhost_path'] = vhost_path.value if vhost_path
 
@@ -275,6 +283,9 @@ module Rightscale
         ::MachineTag::Tag.machine_tag('database', 'bind_port', '*')
       )
 
+      # Performs a tag search for database servers with given attributes.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_searchnode-query-options-- for more information
+      # about this helper method.
       servers = Chef::MachineTagHelper.tag_search(node, query_tag, options)
 
       if lineage
@@ -283,6 +294,7 @@ module Rightscale
         end
       end
 
+      # Builds a Hash with server information obtained from each server from their tags.
       server_hashes = build_server_hash(servers) do |tags|
         server_hash = {
           'lineage' => tags['database:lineage'].first.value,
@@ -292,6 +304,7 @@ module Rightscale
         master_active = tags['database:master_active'].first
         slave_active = tags['database:slave_active'].first
 
+        # If a server is identified as both master and slave, pick the most recent role.
         if master_active && slave_active
           master_since = Time.at(master_active.value.to_i)
           slave_since = Time.at(slave_active.value.to_i)
@@ -314,17 +327,20 @@ module Rightscale
         server_hash
       end
 
+      # If `only_latest_for_role` option is set to true, find the latest active server for the given role if more than
+      # one servers are found.
+      #
       if only_latest_for_role
-        server_hashes = server_hashes.sort_by {|_, server_hash| server_hash['lineage']}.chunk do |_, server_hash|
+        server_hashes = server_hashes.sort_by { |_, server_hash| server_hash['lineage'] }.chunk do |_, server_hash|
           server_hash['lineage']
         end.map do |lineage, server_hashes|
-          server_hashes.sort_by {|_, server_hash| server_hash['role'] || ''}.chunk do |_, server_hash|
+          server_hashes.sort_by { |_, server_hash| server_hash['role'] || '' }.chunk do |_, server_hash|
             server_hash['role'] || ''
           end.map do |role, server_hashes|
             if role.empty?
               server_hashes
             else
-              [server_hashes.max_by {|uuid, server_hash| server_hash["#{role}_since"]}]
+              [server_hashes.max_by { |uuid, server_hash| server_hash["#{role}_since"] }]
             end
           end
         end
