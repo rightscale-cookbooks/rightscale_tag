@@ -1,6 +1,7 @@
 # Test:: database server
 require 'spec_helper'
 require 'socket'
+require 'time'
 
 describe "Database server tags" do
   let(:host_name) { Socket.gethostname }
@@ -18,9 +19,12 @@ describe "Database server tags" do
     db_tags['database:lineage'].first.value.should eq ('production')
   end
 
-  #it "should have a master_active value of 1391473172" do
-  #  db_tags['database:master_active'].first.value.should match ('1391473172')
-  #end
+  # We want to test that the master_active timestamp is a reasonable value; arbitrarily within the last 24 hours
+  let(:db_time) { Time.at(db_tags['database:master_active'].first.value.to_i) }
+
+  it "should have a master_active value that is valid (within the last 24 hours)" do
+    (Time.now - db_time).should < 86400
+  end
 end
 
 # We use find_database_servers helper to find all the database severs, and we write results to a file.
@@ -48,7 +52,10 @@ describe "Found database application servers" do
     db_server_tags['03-CBCDEFG123458']['role'].should eq ('master')
   end
 
-  #it "should have been a master since 2014-02-04 00:19:32 +0000" do
-  #  db_server_tags['03-CBCDEFG123458']['master_since'].should == '2014-02-04 00:19:32 +0000'
-  #end
+  # We want to test that the master_active timestamp is a reasonable value; arbitrarily within the last 24 hours
+  let(:time_from_tags) { Time.parse(db_server_tags['03-CBCDEFG123458']['master_since']).to_i}
+
+  it "should have a master_since timestamp that is valid (within the last 24 hours)" do
+      (Time.now.utc.to_i - time_from_tags).should < 86400
+  end
 end
