@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-delete = false
-
 rightscale_tag_application 'www' do
   bind_ip_address '10.0.0.1'
   bind_port 8080

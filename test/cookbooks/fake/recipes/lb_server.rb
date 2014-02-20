@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-delete = false
-
 # Load balancer setup. We are only using api and not both api and www so the latter doesn't pollute the tag data
 rightscale_tag_load_balancer 'api server' do
   application_name 'api'
