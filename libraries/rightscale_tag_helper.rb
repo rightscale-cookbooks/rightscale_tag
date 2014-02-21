@@ -439,6 +439,20 @@ module Rightscale
       pools_hash
     end
 
+    # Groups the application servers hash returned by find_application_servers
+    # method based on application names.
+    #
+    # @param servers [Hash{String, Hash}] the application servers hash
+    #
+    # @return [Hash] the pools hash with pool name as the key and the server hash
+    #    as value
+    #
+    # @see .group_servers_by_application_name
+    #
+    def group_servers_by_application_name(servers)
+      Rightscale::RightscaleTag.group_servers_by_application_name(servers)
+    end
+
     private
 
     # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various
