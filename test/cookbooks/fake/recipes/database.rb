@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-delete = false
-
 # Database setup
 rightscale_tag_database 'production' do
   bind_ip_address '10.0.0.2'
