@@ -373,9 +373,9 @@ module Rightscale
     # Groups the application servers hash returned by find_application_servers
     # method based on application names.
     #
-    # @param servers [Hash{String, Hash}] the application servers hash
+    # @param servers [Mash{String, Mash}] the application servers hash
     #
-    # @return [Hash] the pools hash with pool name as the key and the server hash
+    # @return [Mash] the pools hash with pool name as the key and the server hash
     #    as value
     #
     # @example
@@ -436,15 +436,15 @@ module Rightscale
           pools_hash[app_name][server_uuid] = app_hash
         end
       end
-      pools_hash
+      Mash.from_hash(pools_hash)
     end
 
     # Groups the application servers hash returned by find_application_servers
     # method based on application names.
     #
-    # @param servers [Hash{String, Hash}] the application servers hash
+    # @param servers [Mash{String, Mash}] the application servers hash
     #
-    # @return [Hash] the pools hash with pool name as the key and the server hash
+    # @return [Mash] the pools hash with pool name as the key and the server hash
     #    as value
     #
     # @see .group_servers_by_application_name

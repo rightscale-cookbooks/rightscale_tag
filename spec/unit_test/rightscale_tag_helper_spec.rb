@@ -824,7 +824,7 @@ describe Rightscale::RightscaleTag do
         servers = fake.find_application_servers(node)
         response = Rightscale::RightscaleTag::group_servers_by_application_name(servers)
 
-        response.should be_kind_of(Hash)
+        response.should be_kind_of(Mash)
 
         response.should include('www')
         response['www'].should include('01-83PJQDO8911IT')
@@ -841,10 +841,10 @@ describe Rightscale::RightscaleTag do
   end
 
   context 'when no application servers exists' do
-    it 'should return an empty Hash' do
+    it 'should return an empty Mash' do
       response = Rightscale::RightscaleTag::group_servers_by_application_name(Mash.new)
 
-      response.should be_kind_of(Hash)
+      response.should be_kind_of(Mash)
       response.should be_empty
     end
   end
