@@ -19,10 +19,14 @@
 
 # The create action that creates required tags for a database server
 action :create do
-  machine_tag 'database:active=true'
-  machine_tag "database:lineage=#{new_resource.lineage}"
-  machine_tag "database:bind_ip_address=#{new_resource.bind_ip_address}"
-  machine_tag "database:bind_port=#{new_resource.bind_port}"
+  [
+    'database:active=true',
+    "database:lineage=#{new_resource.lineage}",
+    "database:bind_ip_address=#{new_resource.bind_ip_address}",
+    "database:bind_port=#{new_resource.bind_port}",
+  ].each do |tag|
+    machine_tag tag
+  end
 
   if new_resource.role
     timestamp_file = "/var/lib/rightscale/rightscale_tag_database_#{new_resource.role}_active.timestamp"
@@ -49,17 +53,15 @@ end
 
 # The delete action that removes the database specific tags from the server
 action :delete do
-  machine_tag 'database:active=true' do
-    action :delete
-  end
-  machine_tag "database:lineage=#{new_resource.lineage}" do
-    action :delete
-  end
-  machine_tag "database:bind_ip_address=#{new_resource.bind_ip_address}" do
-    action :delete
-  end
-  machine_tag "database:bind_port=#{new_resource.bind_port}" do
-    action :delete
+  [
+    'database:active=true',
+    "database:lineage=#{new_resource.lineage}",
+    "database:bind_ip_address=#{new_resource.bind_ip_address}",
+    "database:bind_port=#{new_resource.bind_port}",
+  ].each do |tag|
+    machine_tag tag do
+      action :delete
+    end
   end
 
   if new_resource.role
