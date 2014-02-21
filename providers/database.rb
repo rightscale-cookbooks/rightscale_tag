@@ -19,14 +19,11 @@
 
 # The create action that creates required tags for a database server
 action :create do
-  require 'machine_tag'
+  machine_tag 'database:active=true'
+  machine_tag "database:lineage=#{new_resource.lineage}"
+  machine_tag "database:bind_ip_address=#{new_resource.bind_ip_address}"
+  machine_tag "database:bind_port=#{new_resource.bind_port}"
 
-  database_tags = [
-    ::MachineTag::Tag.machine_tag('database', 'active', true),
-    ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),
-    ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', new_resource.bind_ip_address),
-    ::MachineTag::Tag.machine_tag('database', 'bind_port', new_resource.bind_port),
-  ]
   if new_resource.role
     timestamp_file = "/var/lib/rightscale/rightscale_tag_database_#{new_resource.role}_active.timestamp"
     if ::File.exists?(timestamp_file)
@@ -44,25 +41,27 @@ action :create do
       content timestamp.to_i.to_s
     end
 
-    database_tags << "database:#{new_resource.role}_active=#{timestamp.to_i}"
+    machine_tag "database:#{new_resource.role}_active=#{timestamp.to_i}"
   end
 
-  database_tags.each do |tag|
-    machine_tag tag
-  end
   new_resource.updated_by_last_action(true)
 end
 
 # The delete action that removes the database specific tags from the server
 action :delete do
-  require 'machine_tag'
+  machine_tag 'database:active=true' do
+    action :delete
+  end
+  machine_tag "database:lineage=#{new_resource.lineage}" do
+    action :delete
+  end
+  machine_tag "database:bind_ip_address=#{new_resource.bind_ip_address}" do
+    action :delete
+  end
+  machine_tag "database:bind_port=#{new_resource.bind_port}" do
+    action :delete
+  end
 
-  database_tags = [
-    ::MachineTag::Tag.machine_tag('database', 'active', true),
-    ::MachineTag::Tag.machine_tag('database', 'lineage', new_resource.lineage),
-    ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', new_resource.bind_ip_address),
-    ::MachineTag::Tag.machine_tag('database', 'bind_port', new_resource.bind_port),
-  ]
   if new_resource.role
     timestamp_file = "/var/lib/rightscale/rightscale_tag_database_#{new_resource.role}_active.timestamp"
     if ::File.exists?(timestamp_file)
@@ -75,13 +74,10 @@ action :delete do
       action :delete
     end
 
-    database_tags << "database:#{new_resource.role}_active=#{timestamp.to_i}"
-  end
-
-  database_tags.each do |tag|
-    machine_tag tag do
+    machine_tag "database:#{new_resource.role}_active=#{timestamp.to_i}" do
       action :delete
     end
   end
+
   new_resource.updated_by_last_action(true)
 end

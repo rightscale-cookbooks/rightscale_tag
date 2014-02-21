@@ -19,34 +19,32 @@
 
 # The create action that creates required tags for an application server
 action :create do
-  require 'machine_tag'
+  machine_tag 'application:active=true'
+  machine_tag "application:active_#{new_resource.application_name}=true"
+  machine_tag "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}"
+  machine_tag "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}"
+  machine_tag "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}"
 
-  [
-    ::MachineTag::Tag.machine_tag('application', "active", true),
-    ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
-    ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
-    ::MachineTag::Tag.machine_tag('application', "bind_port_#{new_resource.application_name}", new_resource.bind_port),
-    ::MachineTag::Tag.machine_tag('application', "vhost_path_#{new_resource.application_name}", new_resource.vhost_path)
-  ].each do |tag|
-    machine_tag tag
-  end
   new_resource.updated_by_last_action(true)
 end
 
 # The delete action that removes the application specific tags from the server
 action :delete do
-  require 'machine_tag'
-
-  [
-    ::MachineTag::Tag.machine_tag('application', "active", true),
-    ::MachineTag::Tag.machine_tag('application', "active_#{new_resource.application_name}", true),
-    ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{new_resource.application_name}", new_resource.bind_ip_address),
-    ::MachineTag::Tag.machine_tag('application', "bind_port_#{new_resource.application_name}", new_resource.bind_port),
-    ::MachineTag::Tag.machine_tag('application', "vhost_path_#{new_resource.application_name}", new_resource.vhost_path)
-  ].each do |tag|
-    machine_tag tag do
-      action :delete
-    end
+  machine_tag 'application:active=true' do
+    action :delete
   end
+  machine_tag "application:active_#{new_resource.application_name}=true" do
+    action :delete
+  end
+  machine_tag "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}" do
+    action :delete
+  end
+  machine_tag "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}" do
+    action :delete
+  end
+  machine_tag "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}" do
+    action :delete
+  end
+
   new_resource.updated_by_last_action(true)
 end
