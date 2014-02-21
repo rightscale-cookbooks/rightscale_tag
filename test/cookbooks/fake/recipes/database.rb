@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: fake
-# Recipe:: app_server
+# Recipe:: database
 #
 # Copyright (C) 2013 RightScale, Inc.
 #
@@ -17,23 +17,26 @@
 # limitations under the License.
 #
 
-rightscale_tag_application 'www' do
-  bind_ip_address '10.0.0.1'
-  bind_port 8080
-  vhost_path 'www.example.com'
+delete = false
+
+# Database setup
+rightscale_tag_database 'production' do
+  bind_ip_address '10.0.0.2'
+  bind_port 3306
+  role 'master'
   action :create
 end
 
-# Use find_application_servers helper method and write it to a JSON file so the kitchen test can access it
+# Use the find_database_servers helper method and write it to a JSON file so the kitchen tests can access it
 
 class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
 end
 
-ruby_block "Find application servers" do
+ruby_block "Find database servers" do
   block do
-    ::File.open("/tmp/found_app_servers.json", "w") do |file|
-      file.write find_application_servers(node, "www").to_json
+    File.open("/tmp/found_db_servers.json", "w") do |file|
+      file.write find_database_servers(node, "production").to_json
     end
   end
 end

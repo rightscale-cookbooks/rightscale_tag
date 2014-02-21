@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: fake
-# Recipe:: db_server
+# Recipe:: load_balancer
 #
 # Copyright (C) 2013 RightScale, Inc.
 #
@@ -17,26 +17,22 @@
 # limitations under the License.
 #
 
-delete = false
-
-# Database setup
-rightscale_tag_database 'production' do
-  bind_ip_address '10.0.0.2'
-  bind_port 3306
-  role 'master'
+# Load balancer setup. We are only using api and not both api and www so the latter doesn't pollute the tag data
+rightscale_tag_load_balancer 'api server' do
+  application_name 'api'
   action :create
 end
 
-# Use the find_database_servers helper method and write it to a JSON file so the kitchen tests can access it
+# Use find_load_balancer_servers helper method and write it to a JSON file so the kitchen tests can access it
 
 class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
 end
 
-ruby_block "Find database servers" do
+ruby_block "Find load balancer servers" do
   block do
-    File.open("/tmp/found_db_servers.json", "w") do |file|
-      file.write find_database_servers(node, "production").to_json
+    File.open("/tmp/found_lb_servers.json", "w") do |file|
+      file.write find_load_balancer_servers(node, "api").to_json
     end
   end
 end
