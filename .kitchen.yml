@@ -43,6 +43,8 @@ suites:
       instance_uuid: 02-BBCDEFG123457
     cloud:
       provider: vagrant
+      public_ips: ['33.33.33.10']
+      private_ips: ['10.0.2.15']
 
 # Database server tests
 - name: database
@@ -54,6 +56,8 @@ suites:
       instance_uuid: 03-CBCDEFG123458
     cloud:
       provider: vagrant
+      public_ips: ['33.33.33.12']
+      private_ips: ['10.0.2.17']
 
 # Load Balancer server tests
 - name: load_balancer
@@ -65,3 +69,5 @@ suites:
       instance_uuid: 04-DBCDEFG123459
     cloud:
       provider: vagrant
+      public_ips: ['33.33.33.11']
+      private_ips: ['10.0.2.16']
