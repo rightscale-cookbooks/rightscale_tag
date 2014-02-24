@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'socket'
 
 describe "Default server tags" do
-  let(:host_name) { Socket.gethostname }
+  let(:host_name) { Socket.gethostname.split('.').first }
   let(:default_tags) { MachineTag::Set.new(JSON.parse(IO.read("/vagrant/cache_dir/machine_tag_cache/#{host_name}/tags.json"))) }
 
   it "should have a UUID of 01-ABCDEFG123456" do
