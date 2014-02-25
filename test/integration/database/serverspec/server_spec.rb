@@ -4,7 +4,7 @@ require 'socket'
 require 'time'
 
 describe "Database server tags" do
-  let(:host_name) { Socket.gethostname }
+  let(:host_name) { Socket.gethostname.split('.').first }
   let(:db_tags) { MachineTag::Set.new(JSON.parse(IO.read("/vagrant/cache_dir/machine_tag_cache/#{host_name}/tags.json"))) }
 
   it "should have 5 application specific entries" do
