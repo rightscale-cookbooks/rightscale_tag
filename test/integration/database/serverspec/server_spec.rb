@@ -7,7 +7,7 @@ describe "Database server tags" do
   let(:host_name) { Socket.gethostname.split('.').first }
   let(:db_tags) { MachineTag::Set.new(JSON.parse(IO.read("/vagrant/cache_dir/machine_tag_cache/#{host_name}/tags.json"))) }
 
-  it "should have 5 application specific entries" do
+  it "should have 5 database specific entries" do
     db_tags['database'].length.should == 5
   end
 
@@ -29,7 +29,7 @@ end
 
 # We use find_database_servers helper to find all the database severs, and we write results to a file.
 # Here we are loading the file so it can be parsed
-describe "Found database application servers" do
+describe "Found database servers" do
   let(:db_server_tags) { JSON.parse(IO.read("/tmp/found_db_servers.json")) }
 
   it "should have a UUID of 03-CBCDEFG123458" do
@@ -57,5 +57,29 @@ describe "Found database application servers" do
 
   it "should have a master_since timestamp that is valid (within the last 24 hours)" do
       (Time.now.utc.to_i - time_from_tags).should < 86400
+  end
+end
+
+describe "List local database server tags" do
+  let(:db_server_tags) { JSON.parse(IO.read("/tmp/local_db_tags.json")) }
+
+  it "should have a UUID of 03-CBCDEFG123458" do
+    db_server_tags.has_key?('03-CBCDEFG123458').should be_true
+  end
+
+  it "should include a public IP address of 33.33.33.12" do
+    db_server_tags['03-CBCDEFG123458']['public_ips'].first.should eq ('33.33.33.12')
+  end
+
+  it "should include a private IP address of 10.0.2.17" do
+    db_server_tags['03-CBCDEFG123458']['private_ips'].first.should eq ('10.0.2.17')
+  end
+
+  it "should include a lineage of production" do
+    db_server_tags['03-CBCDEFG123458']['lineage'].should eq ('production')
+  end
+
+  it "should have a role of master" do
+    db_server_tags['03-CBCDEFG123458']['role'].should eq ('master')
   end
 end

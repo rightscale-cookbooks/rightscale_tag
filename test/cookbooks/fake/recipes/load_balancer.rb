@@ -36,3 +36,11 @@ ruby_block "Find load balancer servers" do
     end
   end
 end
+
+ruby_block "List local load balancer tags" do
+  block do
+    File.open("/tmp/local_lb_tags.json", "w") do |file|
+      file.write list_load_balancer_server_tags(node).to_json
+    end
+  end
+end

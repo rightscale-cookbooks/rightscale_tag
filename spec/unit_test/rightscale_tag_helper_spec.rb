@@ -848,4 +848,151 @@ describe Rightscale::RightscaleTag do
       response.should be_empty
     end
   end
+
+  describe ".list_application_server_tags" do
+    let(:application_server) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8911IT',
+        'application:active=true',
+        'application:active_www=true',
+        'application:active_api=true',
+        'application:bind_ip_address_www=157.56.165.202',
+        'application:bind_ip_address_api=157.56.165.203',
+        'application:bind_port_www=80',
+        'application:bind_port_api=80',
+        'application:vhost_path_www=/',
+        'application:vhost_path_api=api.example.com',
+        'server:public_ip_0=157.56.165.202',
+        'server:public_ip_1=157.56.165.203',
+        'server:private_ip_0=10.0.0.1',
+      ]
+    end
+
+    let(:www_attributes) do
+      Mash.from_hash(
+        'bind_ip_address' => '157.56.165.202',
+        'bind_port' => 80,
+        'vhost_path' => '/'
+      )
+    end
+
+    let(:api_attributes) do
+      Mash.from_hash(
+        'bind_ip_address' => '157.56.165.203',
+        'bind_port' => 80,
+        'vhost_path' => 'api.example.com'
+      )
+    end
+
+    context "when tags are found on the server" do
+      it 'should return the application server tags' do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(application_server)
+        response = fake.list_application_server_tags(node)
+
+        response.should be_kind_of(Mash)
+
+        response.should include('01-83PJQDO8911IT')
+        response['01-83PJQDO8911IT']['tags'].should eq(application_server)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['applications'].should be_an_instance_of(Mash)
+        response['01-83PJQDO8911IT']['applications']['www'].should eq(www_attributes)
+        response['01-83PJQDO8911IT']['applications']['api'].should eq(api_attributes)
+      end
+    end
+
+    context "when there are no tags on the server" do
+      it "should return an empty Mash" do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(MachineTag::Set[])
+        response = fake.list_application_server_tags(node)
+
+        response.should be_kind_of(Mash)
+        response.should be_empty
+      end
+    end
+  end
+
+  describe ".list_database_server_tags" do
+    let(:database) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8911IT',
+        'database:active=true',
+        'database:master_active=1391803034',
+        'database:lineage=example',
+        'database:bind_ip_address=10.0.0.1',
+        'database:bind_port=3306',
+        'server:private_ip_0=10.0.0.1',
+        'server:public_ip_0=157.56.165.202',
+        'server:public_ip_1=157.56.165.203',
+      ]
+    end
+
+    context "when tags are found on the server" do
+      it "should return the database server tags" do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(database)
+        response = fake.list_database_server_tags(node)
+
+        response.should be_kind_of(Mash)
+
+        response.should include('01-83PJQDO8911IT')
+        response['01-83PJQDO8911IT']['tags'].should eq(database)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['lineage'].should eq('example')
+        response['01-83PJQDO8911IT']['role'].should eq('master')
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
+        response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
+      end
+    end
+
+    context "when there are no tags on the server" do
+      it "should return an empty Mash" do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(MachineTag::Set[])
+        response = fake.list_database_server_tags(node)
+
+        response.should be_kind_of(Mash)
+        response.should be_empty
+      end
+    end
+  end
+
+  describe ".list_load_balancer_server_tags" do
+    let (:load_balancer) do
+      MachineTag::Set[
+        'server:uuid=01-83PJQDO8911IT',
+        'load_balancer:active=true',
+        'load_balancer:active_www=true',
+        'load_balancer:active_api=true',
+        'server:public_ip_0=157.56.165.202',
+        'server:public_ip_1=157.56.165.203',
+        'server:private_ip_0=10.0.0.1',
+      ]
+    end
+
+    context "when tags are found on the server" do
+      it "should return the load balancer server tags" do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(load_balancer)
+        response = fake.list_load_balancer_server_tags(node)
+
+        response.should be_kind_of(Mash)
+
+        response.should include('01-83PJQDO8911IT')
+        response['01-83PJQDO8911IT']['tags'].should eq(load_balancer)
+        response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
+        response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
+        response['01-83PJQDO8911IT']['application_names'].should eq(['www', 'api'])
+      end
+    end
+
+    context "when there are no tags on the server" do
+      it "should return an empty Mash" do
+        Chef::MachineTagHelper.should_receive(:tag_list).with(node).and_return(MachineTag::Set[])
+        response = fake.list_load_balancer_server_tags(node)
+
+        response.should be_kind_of(Mash)
+        response.should be_empty
+      end
+    end
+  end
 end

@@ -37,3 +37,23 @@ describe "Found load balancer server" do
     lb_server_tags['04-DBCDEFG123459']['application_names'].first.should eq ('api')
   end
 end
+
+describe "Local load balancer server tags" do
+  let(:lb_server_tags) { JSON.parse(IO.read("/tmp/local_lb_tags.json")) }
+
+  it "should have a UUID of 04-DBCDEFG123459" do
+    lb_server_tags.has_key?('04-DBCDEFG123459').should be_true
+  end
+
+  it "should have a public IP address of 33.33.33.11" do
+    lb_server_tags['04-DBCDEFG123459']['public_ips'].first.should eq ('33.33.33.11')
+  end
+
+  it "should have a private IP address of 10.0.2.16" do
+    lb_server_tags['04-DBCDEFG123459']['private_ips'].first.should eq ('10.0.2.16')
+  end
+
+  it "should have an application name of api" do
+    lb_server_tags['04-DBCDEFG123459']['application_names'].first.should eq ('api')
+  end
+end

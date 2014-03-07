@@ -71,15 +71,7 @@ module Rightscale
         end
       end
 
-      # Builds a Hash with server information obtained from each server from their tags.
-      build_server_hash(servers) do |tags|
-        application_names = tags[/^load_balancer:active_.+$/].map do |tag|
-          next if tag.value != 'true'
-          tag.predicate.gsub(/^active_/, '')
-        end
-
-        {'application_names' => application_names.compact}
-      end
+      build_load_balancer_server_hash(servers)
     end
 
     # Find load balancer servers using tags. This will find all active load balancer servers, or, if
@@ -166,26 +158,7 @@ module Rightscale
         end
       end
 
-      # Builds a Hash with server information obtained from each server from their tags.
-      build_server_hash(servers) do |tags|
-        application_hashes = tags[/^application:active_.+$/].map do |tag|
-          next if tag.value != 'true'
-          application_name = tag.predicate.gsub(/^active_/, '')
-          application_hash = {}
-
-          bind_ip_address = tags['application', "bind_ip_address_#{application_name}"].first
-          bind_port = tags['application', "bind_port_#{application_name}"].first
-          vhost_path = tags['application', "vhost_path_#{application_name}"].first
-
-          application_hash['bind_ip_address'] = bind_ip_address.value if bind_ip_address
-          application_hash['bind_port'] = bind_port.value.to_i if bind_port
-          application_hash['vhost_path'] = vhost_path.value if vhost_path
-
-          [application_name, application_hash]
-        end
-
-        {'applications' => Hash[application_hashes.compact]}
-      end
+      build_application_server_hash(servers)
     end
 
     # Find application servers using tags. This will find all active application servers, or, if
@@ -294,38 +267,7 @@ module Rightscale
         end
       end
 
-      # Builds a Hash with server information obtained from each server from their tags.
-      server_hashes = build_server_hash(servers) do |tags|
-        server_hash = {
-          'lineage' => tags['database:lineage'].first.value,
-          'bind_ip_address' => tags['database:bind_ip_address'].first.value,
-          'bind_port' => tags['database:bind_port'].first.value.to_i,
-        }
-        master_active = tags['database:master_active'].first
-        slave_active = tags['database:slave_active'].first
-
-        # If a server is identified as both master and slave, pick the most recent role.
-        if master_active && slave_active
-          master_since = Time.at(master_active.value.to_i)
-          slave_since = Time.at(slave_active.value.to_i)
-
-          if master_since >= slave_since
-            server_hash['role'] = 'master'
-            server_hash['master_since'] = master_since
-          else
-            server_hash['role'] = 'slave'
-            server_hash['slave_since'] = slave_since
-          end
-        elsif master_active
-          server_hash['role'] = 'master'
-          server_hash['master_since'] = Time.at(master_active.value.to_i)
-        elsif slave_active
-          server_hash['role'] = 'slave'
-          server_hash['slave_since'] = Time.at(slave_active.value.to_i)
-        end
-
-        server_hash
-      end
+      server_hashes = build_database_server_hash(servers)
 
       # If `only_latest_for_role` option is set to true, find the latest active server for the given role if more than
       # one servers are found.
@@ -453,6 +395,154 @@ module Rightscale
       Rightscale::RightscaleTag.group_servers_by_application_name(servers)
     end
 
+    # Lists all machine tags on an application server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on an application server
+    #
+    # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
+    #
+    # @example Example Hash output
+    #
+    #   {
+    #     'UUID': {
+    #       'tags': MachineTag::Set,
+    #       'applications': {
+    #         'APP-1': {
+    #           'bind_address': 'IP:PORT',
+    #           'ip': 'IP',
+    #           'port': 'PORT',
+    #           'vhost_path': 'VHOST_PATH',
+    #         }
+    #       },
+    #       'private_ips': [],
+    #       'public_ips': []
+    #     }
+    #   }
+    #
+    def self.list_application_server_tags(node)
+      require 'machine_tag'
+
+      # List all the tags on the server.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_listnode
+      # about this helper method.
+      tags_list = Chef::MachineTagHelper.tag_list(node)
+      return Mash.from_hash({}) if tags_list.empty?
+
+      build_application_server_hash([tags_list])
+    end
+
+    # Lists all machine tags on an application server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on an application server
+    #
+    # @see .list_application_server_tags
+    #
+    def list_application_server_tags(node)
+      Rightscale::RightscaleTag.list_application_server_tags(node)
+    end
+
+    # Lists all machine tags on a database server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on a database server
+    #
+    # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
+    #
+    # @example Example Hash output
+    #     {
+    #       '01-ABCDEF4567890' => {
+    #         'tags' => MachineTag::Set[
+    #           'database:active=true',
+    #           'database:master_active=1391803034',
+    #           'database:lineage=example',
+    #           'server:public_ip_0=203.0.113.4',
+    #           'server:private_ip_0=10.0.0.4',
+    #           'server:uuid=01-ABCDEF4567890'
+    #         ],
+    #         'lineage' => 'example',
+    #         'bind_ip_address' => '10.0.0.4',
+    #         'bind_port' => 3306,
+    #         'role' => 'master',
+    #         'master_since' => Time.at(1391803034),
+    #         'public_ips' => ['203.0.113.4'],
+    #         'private_ips' => ['10.0.0.4']
+    #       }
+    #     }
+    #
+    def self.list_database_server_tags(node)
+      # List all the tags on the server.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_listnode
+      # about this helper method.
+      tags_list = Chef::MachineTagHelper.tag_list(node)
+      return Mash.from_hash({}) if tags_list.empty?
+
+      build_database_server_hash([tags_list])
+    end
+
+    # Lists all machine tags on a database server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on a database server
+    #
+    # @see .list_database_server_tags
+    #
+    def list_database_server_tags(node)
+      Rightscale::RightscaleTag.list_database_server_tags(node)
+    end
+
+    # Lists all machine tags on a load balancer server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on a load balancer server
+    #
+    # @see http://rubydoc.info/gems/machine_tag/#MachineTag__Set MachineTag::Set
+    #
+    # @example Example Hash output
+    #
+    #     {
+    #       '01-ABCDEF123456' => {
+    #         'tags' => MachineTag::Set[
+    #           'load_balancer:active=true',
+    #           'load_balancer:active_www=true',
+    #           'server:public_ip_0=203.0.113.2',
+    #           'server:private_ip_0=10.0.0.2',
+    #           'server:uuid=01-ABCDEF123456'
+    #         ],
+    #         'application_names' => ['www'],
+    #         'public_ips' => ['203.0.113.2'],
+    #         'private_ips' => ['10.0.0.2']
+    #       }
+    #     }
+    #
+    def self.list_load_balancer_server_tags(node)
+      # List all the tags on the server.
+      # See https://github.com/rightscale-cookbooks/machine_tag#tag_listnode
+      # about this helper method.
+      tags_list = Chef::MachineTagHelper.tag_list(node)
+      return Mash.from_hash({}) if tags_list.empty?
+
+      build_load_balancer_server_hash([tags_list])
+    end
+
+    # Lists all machine tags on a load balancer server.
+    #
+    # @param node [Chef::Node] the chef node
+    #
+    # @return [Mash] Information about the machine tags on a load balancer server
+    #
+    # @see .list_load_balancer_server_tags
+    #
+    def list_load_balancer_server_tags(node)
+      Rightscale::RightscaleTag.list_load_balancer_server_tags(node)
+    end
+
     private
 
     # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various
@@ -469,10 +559,11 @@ module Rightscale
       options[:required_tags] += tags
     end
 
-    # Builds a hash of server information hashes to be returned by the `find_*_servers` methods. A callback
-    # block can be passed to further populate each server information hash from each tag set.
+    # Builds a hash of server information hashes to be returned by the `find_*_servers` and the
+    # `list_*_server_tags` methods. A callback block can be passed to further populate each server
+    # information hash from each tag set.
     #
-    # @param servers [Array<MachineTag::Set>] the array of tag sets returned by Chef::MachineTagHelper#tag_search
+    # @param servers [Array<MachineTag::Set>] the array of tag sets
     # @param block [Proc(MachineTag::Set)] a block that does further processing on each tag set; it should
     #   return a hash that will be merged into the server information hash
     #
@@ -493,6 +584,95 @@ module Rightscale
       end
 
       Mash.from_hash(Hash[server_hashes])
+    end
+
+    # Builds a hash of server information and adds application-related information found in the
+    # server tags.
+    #
+    # @param servers [Array<MachineTag::Set>] the array of tag sets
+    #
+    # @return [Mash] the hash with server UUIDs as keys and server information hashes as values
+    #
+    def self.build_application_server_hash(servers)
+      # Builds a Hash with server information obtained from each server from their tags.
+      build_server_hash(servers) do |tags|
+        application_hashes = tags[/^application:active_.+$/].map do |tag|
+          next if tag.value != 'true'
+          application_name = tag.predicate.gsub(/^active_/, '')
+          application_hash = {}
+
+          bind_ip_address = tags['application', "bind_ip_address_#{application_name}"].first
+          bind_port = tags['application', "bind_port_#{application_name}"].first
+          vhost_path = tags['application', "vhost_path_#{application_name}"].first
+
+          application_hash['bind_ip_address'] = bind_ip_address.value if bind_ip_address
+          application_hash['bind_port'] = bind_port.value.to_i if bind_port
+          application_hash['vhost_path'] = vhost_path.value if vhost_path
+
+          [application_name, application_hash]
+        end
+
+        {'applications' => Hash[application_hashes.compact]}
+      end
+    end
+
+    # Builds a hash of server information and adds database-related information found in the
+    # server tags.
+    #
+    # @param servers [Array<MachineTag::Set>] the array of tag sets
+    #
+    # @return [Mash] the hash with server UUIDs as keys and server information hashes as values
+    #
+    def self.build_database_server_hash(servers)
+      build_server_hash(servers) do |tags|
+        server_hash = {
+          'lineage' => tags['database:lineage'].first.value,
+          'bind_ip_address' => tags['database:bind_ip_address'].first.value,
+          'bind_port' => tags['database:bind_port'].first.value.to_i,
+        }
+        master_active = tags['database:master_active'].first
+        slave_active = tags['database:slave_active'].first
+
+        # If a server is identified as both master and slave, pick the most recent role.
+        if master_active && slave_active
+          master_since = Time.at(master_active.value.to_i)
+          slave_since = Time.at(slave_active.value.to_i)
+
+          if master_since >= slave_since
+            server_hash['role'] = 'master'
+            server_hash['master_since'] = master_since
+          else
+            server_hash['role'] = 'slave'
+            server_hash['slave_since'] = slave_since
+          end
+        elsif master_active
+          server_hash['role'] = 'master'
+          server_hash['master_since'] = Time.at(master_active.value.to_i)
+        elsif slave_active
+          server_hash['role'] = 'slave'
+          server_hash['slave_since'] = Time.at(slave_active.value.to_i)
+        end
+
+        server_hash
+      end
+    end
+
+    # Builds a hash of server information and adds load balancer-related information found in the
+    # server tags.
+    #
+    # @param servers [Array<MachineTag::Set>] the array of tag sets
+    #
+    # @return [Mash] the hash with server UUIDs as keys and server information hashes as values
+    #
+    def self.build_load_balancer_server_hash(servers)
+      build_server_hash(servers) do |tags|
+        application_names = tags[/^load_balancer:active_.+$/].map do |tag|
+          next if tag.value != 'true'
+          tag.predicate.gsub(/^active_/, '')
+        end
+
+        {'application_names' => application_names.compact}
+      end
     end
   end
 end

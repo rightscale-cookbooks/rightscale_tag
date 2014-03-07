@@ -38,3 +38,11 @@ ruby_block "Find database servers" do
     end
   end
 end
+
+ruby_block "List local database server tags" do
+  block do
+    File.open("/tmp/local_db_tags.json", "w") do |file|
+      file.write list_database_server_tags(node).to_json
+    end
+  end
+end

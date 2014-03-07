@@ -51,3 +51,24 @@ describe "Using find_application_servers helper method, the found www server sho
     app_server_tags['02-BBCDEFG123457']['applications']['www']['bind_port'].should == 8080
   end
 end
+
+describe "List local application server tags" do
+
+  let(:app_server_tags) { JSON.parse(IO.read("/tmp/local_app_server_tags.json")) }
+
+  it "return a UUID of 02-BBCDEFG123457" do
+    app_server_tags.has_key?('02-BBCDEFG123457').should be_true
+  end
+
+  it "return a www server" do
+    app_server_tags['02-BBCDEFG123457']['applications'].should have_key('www')
+  end
+
+  it "return a bind IP address of 10.0.0.1" do
+    app_server_tags['02-BBCDEFG123457']['applications']['www']['bind_ip_address'].should eq ('10.0.0.1')
+  end
+
+  it "return a bind port of 8080" do
+    app_server_tags['02-BBCDEFG123457']['applications']['www']['bind_port'].should == 8080
+  end
+end
