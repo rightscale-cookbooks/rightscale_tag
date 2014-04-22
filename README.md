@@ -322,40 +322,16 @@ A resource to create and remove tags to identify a load balancer server.
 
 ### Actions
 
-<table>
-  <tr>
-    <th>Actions</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><code>:create</code></td>
-    <td>creates the tags required for the load balancer server</td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>:delete</code></td>
-    <td>removes the tags from the load balancer server</td>
-    <td></td>
-  </tr>
-</table>
+| Actions | Description | Default |
+| --- | --- | --- |
+| `:create` | creates the tags required for the load balancer server | yes |
+| `:delete` | removes the tags from the load balancer server | |
 
 ### Attributes
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Description</th>
-    <th>Default Value</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td><code>application_name</code></td>
-    <td>the name of the application the load balancer will serve</td>
-    <td><code>name</code></td>
-    <td>yes</td>
-  </tr>
-</table>
+| Attribute | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `application_name` | the name of the application the load balancer will serve | | yes |
 
 ## `rightscale_tag_application`
 
@@ -363,58 +339,19 @@ A resource to create and remove tags to identify an application server.
 
 ### Actions
 
-<table>
-  <tr>
-    <th>Actions</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><code>:create</code></td>
-    <td>creates the tags required for the application server</td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>:delete</code></td>
-    <td>removes the tags from the application server</td>
-    <td></td>
-  </tr>
-</table>
+| Actions | Description | Default |
+| --- | --- | --- |
+| `:create` | creates the tags required for the application server | yes |
+| `:delete` | removes the tags from the application server | |
 
 ### Attributes
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Description</th>
-    <th>Default Value</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td><code>application_name</code></td>
-    <td>the name of the application</td>
-    <td><code>name</code></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>bind_ip_address</code></td>
-    <td>the IP address the application is bound to</td>
-    <td></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>bind_port</code></td>
-    <td>the port the application is bound to</td>
-    <td></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>vhost_path</code></td>
-    <td>the vhost or path of the application</td>
-    <td></td>
-    <td>yes</td>
-  </tr>
-</table>
+| Attribute | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `application_name` | the name of the application | | yes |
+| `bind_ip_address` | the IP address the application is bound to | | yes |
+| `bind_port` | the port the application is bound to | | yes |
+| `vhost_path | the vhost or path of the application | | yes |
 
 ## `rightscale_tag_database`
 
@@ -423,58 +360,19 @@ role of master or slave.
 
 ### Actions
 
-<table>
-  <tr>
-    <th>Actions</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><code>:create</code></td>
-    <td>creates the tags required for the database server</td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>:delete</code></td>
-    <td>removes the tags from the database server</td>
-    <td></td>
-  </tr>
-</table>
+| Actions | Description | Default |
+| --- | --- | --- |
+| `:create` | creates the tags required for the database server | yes |
+| `:delete` | removes the tags from the database server | |
 
 ### Attributes
 
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Description</th>
-    <th>Default Value</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td><code>lineage</code></td>
-    <td>the lineage of the database</td>
-    <td><code>name</code></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>bind_ip_address</code></td>
-    <td>the IP address the database is bound to</td>
-    <td></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>bind_port</code></td>
-    <td>the port the database is bound to</td>
-    <td></td>
-    <td>yes</td>
-  </tr>
-  <tr>
-    <td><code>role</code></td>
-    <td>the role of the database; this can be <code>'master'</code> or <code>'slave'</code></td>
-    <td></td>
-    <td>no</td>
-  </tr>
-</table>
+| Attribute | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `lineage` | the lineage of the database | | yes |
+| `bind_ip_address` | the IP address the database is bound to | | yes |
+| `bind_port` | the port the database is bound to | | yes |
+| `role` | the role of the database; this can be `'master'` or `'slave'` | | no |
 
 # Helpers
 
@@ -499,33 +397,12 @@ def find_load_balancer_servers(node, application_name = nil, options = {})
 
 ### Parameters
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  <tr>
-    <td><code>node</code></td>
-    <td>the Chef node</td>
-    <td><code>Chef::Node</code></td>
-  </tr>
-  <tr>
-    <td><code>application_name</code></td>
-    <td>the name of the application served by load balancer servers to search for; this is an optional parameter</td>
-    <td><code>String</code></td>
-  </tr>
-  <tr>
-    <td><code>options</code></td>
-    <td>optional parameters</td>
-    <td><code>Hash</code></td>
-  </tr>
-  <tr>
-    <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
-    <td><code>Integer</code></td>
-  </tr>
-</table>
+| Name | Description | Type |
+| --- | --- | --- |
+| `node` | the Chef node | `Chef::Node` |
+| `application_name` | the name of the application served by load balancer servers to search for; this is an optional parameter | `String` |
+| `options` | optional parameters | `Hash` |
+| `options[:query_timeout]` | the seconds to timeout for the query operation; the default is `120` | `Integer` |
 
 ## `find_application_servers`
 
@@ -539,33 +416,12 @@ def find_application_servers(node, application_name = nil, options = {})
 
 ### Parameters
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  <tr>
-    <td><code>node</code></td>
-    <td>the Chef node</td>
-    <td><code>Chef::Node</code></td>
-  </tr>
-  <tr>
-    <td><code>application_name</code></td>
-    <td>the name of the application served by the application servers to search for; this is an optional parameter</td>
-    <td><code>String</code></td>
-  </tr>
-  <tr>
-    <td><code>options</code></td>
-    <td>optional parameters</td>
-    <td><code>Hash</code></td>
-  </tr>
-  <tr>
-    <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
-    <td><code>Integer</code></td>
-  </tr>
-</table>
+| Name | Description | Type |
+| --- | --- | --- |
+| `node` | the Chef node | `Chef::Node` |
+| `application_name` | the name of the application served by the application servers to search for; this is an optional parameter | `String` |
+| `options` | optional parameters | `Hash` |
+| `options[:query_timeout]` | the seconds to timeout for the query operation; the default is `120` | `Integer` |
 
 ## `find_database_servers`
 
@@ -579,43 +435,14 @@ def find_database_servers(node, lineage = nil, role = nil, options = {})
 
 ### Parameters
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  <tr>
-    <td><code>node</code></td>
-    <td>the Chef node</td>
-    <td><code>Chef::Node</code></td>
-  </tr>
-  <tr>
-    <td><code>lineage</code></td>
-    <td>the lineage of the database servers to search for; this is an optional parameter</td>
-    <td><code>String</code></td>
-  </tr>
-  <tr>
-    <td><code>role</code></td>
-    <td>the role of the database servers to search for; this should be <code>'master'</code> or <code>'slave'</code>; this is an optional parameter</td>
-    <td><code>String</code></td>
-  </tr>
-  <tr>
-    <td><code>options</code></td>
-    <td>optional parameters</td>
-    <td><code>Hash</code></td>
-  </tr>
-  <tr>
-    <td><code>options[:only_latest_for_role]</code></td>
-    <td>only return the latest server tagged for a role; the default is <code>false</code></td>
-    <td><code>Boolean</code></td>
-  </tr>
-  <tr>
-    <td><code>options[:query_timeout]</code></td>
-    <td>the seconds to timeout for the query operation; the default is <code>120</code></td>
-    <td><code>Integer</code></td>
-  </tr>
-</table>
+| Name | Description | Type |
+| --- | --- | --- |
+| `node` | the Chef node | `Chef::Node` |
+| `lineage` | the lineage of the database servers to search for; this is an optional parameter | `String` |
+| `role` | the role of the database servers to search for; this should be `'master'` or `'slave'`; this is an optional parameter | `String` |
+| `options` | optional parameters | `Hash` |
+| `options[:only_latest_for_role]` | only return the latest server tagged for a role; the default is `false` | `Boolean` |
+| `options[:query_timeout]` | the seconds to timeout for the query operation; the default is `120` | `Integer` |
 
 # Author
 
