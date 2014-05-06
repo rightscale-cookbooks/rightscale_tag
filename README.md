@@ -24,7 +24,7 @@ Github Repository: [https://github.com/rightscale-cookbooks/rightscale_tag](http
 * Requires Ruby 1.9 or higher
 * Platform
   * Ubuntu 12.04
-  * CentOS 6.4
+  * CentOS 6
 * Cookbooks
   * [machine_tag]
   * [marker]
