@@ -19,6 +19,16 @@
 
 if defined?(ChefSpec)
 
+  # 'create' action for rightscale_tag_application resource
+  def create_rightscale_tag_application(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_application', :create, resource_name)
+  end
+
+  # 'delete' action for rightscale_tag_application resource
+  def delete_rightscale_tag_application(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_application', :delete, resource_name)
+  end
+
   # 'create' action for rightscale_tag_database resource
   def create_rightscale_tag_database(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_database', :create, resource_name)
@@ -27,6 +37,16 @@ if defined?(ChefSpec)
   # 'delete' action for rightscale_tag_database resource
   def delete_rightscale_tag_database(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_database', :delete, resource_name)
+  end
+
+  # 'create' action for rightscale_tag_load_balancer resource
+  def create_rightscale_tag_load_balancer(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_load_balancer', :create, resource_name)
+  end
+
+  # 'delete' action for rightscale_tag_load_balancer resource
+  def delete_rightscale_tag_load_balancer(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new('rightscale_tag_load_balancer', :delete, resource_name)
   end
 
 end
