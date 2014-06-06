@@ -39,6 +39,9 @@ attribute :bind_port, :kind_of => Fixnum, :required => true
 # The vhost path of the application. Examples: `'api.example.com'`, `'/api'`
 attribute :vhost_path, :kind_of => String, :required => true
 
+# The recipe/RightScript to remotely execute on the app server after registering with the load balancer
+attribute :remote_script, :kind_of => String
+
 # Creates the required tags for the application server
 actions :create
 
