@@ -25,7 +25,7 @@ action :create do
     "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
     "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}",
     "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}",
-    "application:remote_script_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
+    *("application:remote_script_#{new_resource.application_name}=#{new_resource.remote_script}" if new_resource.remote_script),
   ].each do |tag|
     machine_tag tag
   end
@@ -41,7 +41,7 @@ action :delete do
     "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
     "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}",
     "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}",
-    "application:remote_script_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
+    "application:remote_script_#{new_resource.application_name}=#{new_resource.remote_script}",
   ].each do |tag|
     machine_tag tag do
       action :delete

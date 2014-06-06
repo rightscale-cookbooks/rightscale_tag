@@ -2,12 +2,12 @@
 require 'spec_helper'
 require 'socket'
 
-describe "Application LWRP" do
+describe "Application LWRP with remote recipe" do
   let(:host_name) { Socket.gethostname.split('.').first }
   let(:app_tags) { MachineTag::Set.new(JSON.parse(IO.read("/vagrant/cache_dir/machine_tag_cache/#{host_name}/tags.json"))) }
 
-  it "should have 5 application specific entries" do
-    app_tags['application'].length.should == 5
+  it "should have 6 application specific entries" do
+    app_tags['application'].length.should == 6
   end
 
   it "should be active" do
@@ -25,6 +25,10 @@ describe "Application LWRP" do
 
   it "should have vhost path of www.example.com" do
     app_tags['application:vhost_path_www'].first.value.should eq ('www.example.com')
+  end
+
+  it "should have remote script of fake::recipe" do
+    app_tags['application:remote_script_www'].first.value.should eq ('fake::recipe')
   end
 end
 

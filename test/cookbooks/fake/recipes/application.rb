@@ -21,6 +21,7 @@ rightscale_tag_application 'www' do
   bind_ip_address '10.0.0.1'
   bind_port 8080
   vhost_path 'www.example.com'
+  remote_script 'fake::recipe'
   action :create
 end
 
