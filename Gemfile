@@ -10,4 +10,5 @@ group :integration do
   gem 'strainer', '~> 3.3'
   gem 'chefspec', '~> 3.2'
   gem 'travis-lint'
+  gem 'rspec-expectations', '~> 2.14.0'
 end
