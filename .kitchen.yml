@@ -59,6 +59,19 @@ suites:
       public_ips: ['33.33.33.10']
       private_ips: ['10.0.2.15']
 
+# Application server tests no remote script
+- name: application_no_remote_script
+  run_list:
+  - recipe[rightscale_tag]
+  - recipe[fake::application_no_remote]
+  attributes:
+    rightscale:
+      instance_uuid: 02-BBCDEFG123454
+    cloud:
+      provider: vagrant
+      public_ips: ['33.33.33.10']
+      private_ips: ['10.0.2.15']
+
 # Database server tests
 - name: database
   run_list:
