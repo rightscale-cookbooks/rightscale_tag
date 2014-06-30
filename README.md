@@ -1,6 +1,12 @@
 # rightscale_tag cookbook
 
-[![Build Status](https://travis-ci.org/rightscale-cookbooks/rightscale_tag.png?branch=master)](https://travis-ci.org/rightscale-cookbooks/rightscale_tag)
+[![Cookbook](https://img.shields.io/cookbook/v/rightscale_tag.svg?style=flat)][cookbook]
+[![Release](https://img.shields.io/github/release/rightscale-cookbooks/rightscale_tag.svg?style=flat)][release]
+[![Build Status](https://img.shields.io/travis/rightscale-cookbooks/rightscale_tag.svg?style=flat)][travis]
+
+[cookbook]: https://supermarket.getchef.com/cookbooks/rightscale_tag
+[release]: https://github.com/rightscale-cookbooks/rightscale_tag/releases/latest
+[travis]: https://travis-ci.org/rightscale-cookbooks/rightscale_tag
 
 This cookbook provides recipes, resources, providers, and library methods for
 dealing with machine tags in RightScale. It builds on the resources and library
