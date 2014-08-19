@@ -11,8 +11,8 @@ describe "Application LWRP" do
   end
 
   it "should be active" do
-    app_tags['application:active'].first.value.should be_true
-    app_tags['application:active_www'].first.value.should be_true
+    app_tags['application:active'].first.value.should be_truthy
+    app_tags['application:active_www'].first.value.should be_truthy
   end
 
   it "should have an IP of 10.0.0.1" do
@@ -36,7 +36,7 @@ describe "Using find_application_servers helper method, the found www server sho
   let(:app_server_tags) { JSON.parse(IO.read("/tmp/found_app_servers.json")) }
 
   it "return a UUID of 02-BBCDEFG123457" do
-    app_server_tags.has_key?('02-BBCDEFG123457').should be_true
+    app_server_tags.has_key?('02-BBCDEFG123457').should be_truthy
   end
 
   it "return a www server" do

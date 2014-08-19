@@ -11,8 +11,8 @@ describe "Load balancer server tags" do
   end
 
   it "should be active" do
-    lb_tags['load_balancer:active'].should be_true
-    lb_tags['load_balancer:active_api'].should be_true
+    lb_tags['load_balancer:active'].should be_truthy
+    lb_tags['load_balancer:active_api'].should be_truthy
   end
 end
 
@@ -22,7 +22,7 @@ describe "Found load balancer server" do
   let(:lb_server_tags) { JSON.parse(IO.read("/tmp/found_lb_servers.json")) }
 
   it "should have a UUID of 04-DBCDEFG123459" do
-    lb_server_tags.has_key?('04-DBCDEFG123459').should be_true
+    lb_server_tags.has_key?('04-DBCDEFG123459').should be_truthy
   end
 
   it "should have a public IP address of 33.33.33.11" do

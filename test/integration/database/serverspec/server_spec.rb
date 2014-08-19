@@ -12,7 +12,7 @@ describe "Database server tags" do
   end
 
   it "should be active" do
-    db_tags['database:active'].first.value.should be_true
+    db_tags['database:active'].first.value.should be_truthy
   end
 
   it "should have a lineage of production" do
@@ -33,7 +33,7 @@ describe "Found database application servers" do
   let(:db_server_tags) { JSON.parse(IO.read("/tmp/found_db_servers.json")) }
 
   it "should have a UUID of 03-CBCDEFG123458" do
-    db_server_tags.has_key?('03-CBCDEFG123458').should be_true
+    db_server_tags.has_key?('03-CBCDEFG123458').should be_truthy
   end
 
   it "should include a public IP address of 33.33.33.12" do
