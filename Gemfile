@@ -8,6 +8,6 @@ group :integration do
   gem 'test-kitchen', '~> 1.1.0'
   gem 'kitchen-vagrant'
   gem 'strainer', '~> 3.3'
-  gem 'chefspec', '~> 3.2'
+  gem 'chefspec', '~> 4.0'
   gem 'travis-lint'
 end
