@@ -1,11 +1,9 @@
 language: ruby
 rvm:
-  - 2.0.0
-  - 1.9.3
+- 2.0.0
+- 1.9.3
 before_script: bundle exec berks install
 script: bundle exec strainer test --except kitchen
 notifications:
-  irc:
-    channels: ["chat.freenode.net#rightscale"]
-    use_notice: true
-    skip_join: true
+  slack:
+    secure: oxSMjTt6LTyKpUvvkeGCCeihr0rIsNzO1Kh8bKrz/4RipYw1HBwfxpDwnQ1UK0w8Zrwvh3AbRlGtXUTrnaEiDvf8CC14lsuQBWWiYjSbAZ1Jkc/1MT3X4JxBxcbS+9Dgbq8rzyGeuiDWqFwe+cFtQEo+gZMRMwe0sO7BVi6/VJ8=
