@@ -387,7 +387,7 @@ type. To use them in a recipe add the following:
 
 ```ruby
 class Chef::Recipe
-  include RightScale::RightScaleTag
+  include Rightscale::RightscaleTag
 end
 ```
 
