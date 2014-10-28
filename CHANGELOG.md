@@ -3,6 +3,11 @@ rightscale_tag Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the rightscale_tag cookbook.
 
+v1.0.4
+------
+
+- Check IP addresses if they are private IPs before setting server:public_ip_# and server:private_ip_#.
+
 v1.0.3
 ------
 
