@@ -453,34 +453,6 @@ module Rightscale
       Rightscale::RightscaleTag.group_servers_by_application_name(servers)
     end
 
-    # Determines if an IP address is a public IPv4 address based on RFC 1918.
-    #
-    # @param ipaddress [String] the IPv4 address to check
-    #
-    # @return [Boolean] whether the IP is a public IPv4 address or not
-    #
-    def self.is_public_ip?(ipaddress)
-      require 'ipaddr'
-
-      ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'].each do |private_block|
-        IPAddr.new(private_block)
-        return false if IPAddr.new(private_block).include?(ipaddress)
-      end
-      true
-    end
-
-    # Determines if an IP address is a public IPv4 address based on RFC 1918.
-    #
-    # @param ipaddress [String] the IPv4 address to check
-    #
-    # @return [Boolean] whether the IP is a public IPv4 address or not
-    #
-    # @see .is_public_ip?
-    #
-    def is_public_ip?(ipaddress)
-      Rightscale::RightscaleTag.is_public_ip?(ipaddress)
-    end
-
     private
 
     # Adds required tags to the options for Chef::MachineTagHelper#tag_search that are needed for the various
