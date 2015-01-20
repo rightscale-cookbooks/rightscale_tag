@@ -28,25 +28,15 @@ if node['rightscale'] && node['rightscale']['instance_uuid']
 end
 
 if node['cloud']
-  # For cloudstack, ignore 'cloud/public_ips' and determine if
-  # 'cloud/private_ips' are private or public IPs and set tags accordingly.
-  if node['cloud']['provider'] == 'cloudstack'
-    if node['cloud']['private_ips']
-      private_ips, public_ips = node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? }.partition { |ip| IPAddress(ip).private? }
-      public_ips.each_with_index { |public_ip, index| machine_tag "server:public_ip_#{index}=#{public_ip}" }
-      private_ips.each_with_index { |private_ip, index| machine_tag "server:private_ip_#{index}=#{private_ip}" }
+  if node['cloud']['public_ips']
+    node['cloud']['public_ips'].reject { |ip| ip.nil? || ip.empty? || IPAddress(ip).private? }.each_with_index do |public_ip, index|
+      machine_tag "server:public_ip_#{index}=#{public_ip}"
     end
-  else
-    if node['cloud']['public_ips']
-      node['cloud']['public_ips'].reject { |ip| ip.nil? || ip.empty? || IPAddress(ip).private? }.each_with_index do |public_ip, index|
-        machine_tag "server:public_ip_#{index}=#{public_ip}"
-      end
-    end
+  end
 
-    if node['cloud']['private_ips']
-      node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
-        machine_tag "server:private_ip_#{index}=#{private_ip}"
-      end
+  if node['cloud']['private_ips']
+    node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
+      machine_tag "server:private_ip_#{index}=#{private_ip}"
     end
   end
 end
