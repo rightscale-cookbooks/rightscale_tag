@@ -3,6 +3,11 @@ rightscale_tag Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the rightscale_tag cookbook.
 
+v1.0.6
+------
+
+- Remove workaround logic to handle cloudstack behaviour with IP addresses.
+
 v1.0.5
 ------
 
