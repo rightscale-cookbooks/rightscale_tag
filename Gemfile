@@ -9,5 +9,6 @@ group :integration do
   gem 'kitchen-vagrant'
   gem 'strainer', '~> 3.3.0'
   gem 'chefspec', '~> 3.4.0'
+  gem 'rspec-expectations'
   gem 'travis-lint'
 end
