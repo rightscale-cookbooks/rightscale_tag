@@ -20,6 +20,8 @@
 lib = File.expand_path('../../libraries', __FILE__)
 $:.unshift(lib) unless $:.include?(lib)
 
+require 'rspec/expectations'
 require 'chefspec'
+
 require 'rightscale_tag_helper'
 require 'machine_tag'
