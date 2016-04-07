@@ -3,6 +3,16 @@ rightscale_tag Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the rightscale_tag cookbook.
 
+v1.2.0
+------
+
+- Updated to use machine_tag-1.2.0 - support for multiple tags, and match_all
+
+v1.1.0
+------
+
+- Support for RL10
+
 v1.0.6
 ------
 
