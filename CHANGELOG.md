@@ -3,6 +3,13 @@ rightscale_tag Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the rightscale_tag cookbook.
 
+v1.2.1
+------
+
+- Updated to use machine_tag-1.2.1
+- Tag Scope limited to operational instances
+- Tag Scope limited to cloud of instance making call
+
 v1.2.0
 ------
 
