@@ -4,7 +4,7 @@ maintainer_email 'cookbooks@rightscale.com'
 license          'Apache 2.0'
 description      'Provides LWRPs and helper methods for building 3-tier applications using machine tags in RightScale'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.2.1'
+version          '1.2.2'
 
 depends 'machine_tag', '~> 1.2.1'
 depends 'marker', '~> 1.0.0'
