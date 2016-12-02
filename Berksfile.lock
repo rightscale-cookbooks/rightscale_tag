@@ -2,7 +2,9 @@ DEPENDENCIES
   fake
     path: test/cookbooks/fake
   machine_tag
-    path: ../machine_tag
+    git: https://github.com/rightscale-cookbooks/machine_tag.git
+    revision: dd3c50723c82feabb538d97265f84d32e59b374a
+    branch: chef-12-migration
   rightscale_tag
     path: .
     metadata: true
