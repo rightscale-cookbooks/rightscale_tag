@@ -7,7 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '2.0.0'
 
 depends 'machine_tag', '~> 2.0'
-depends 'marker', '~> 1.0.0'
+depends 'marker', '~> 2.0.0'
 
 recipe 'rightscale_tag::default', 'Tags a server with the standard RightScale server tags'
 recipe 'rightscale_tag::monitoring', 'Tags a server with the RightScale monitoring server tag'
