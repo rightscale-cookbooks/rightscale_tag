@@ -18,10 +18,10 @@
 #
 
 # The name of the application
-attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :application_name, kind_of: String, name_attribute: true
 
 # The bind IP address of the application
-attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks => {
+attribute :bind_ip_address, kind_of: String, required: true, callbacks: {
   'should be a valid IP address' => lambda do |ip_address|
     require 'ipaddress'
     begin
@@ -34,10 +34,10 @@ attribute :bind_ip_address, :kind_of => String, :required => true, :callbacks =>
 }
 
 # The bind port of the application
-attribute :bind_port, :kind_of => Fixnum, :required => true
+attribute :bind_port, kind_of: Fixnum, required: true
 
 # The vhost path of the application. Examples: `'api.example.com'`, `'/api'`
-attribute :vhost_path, :kind_of => String, :required => true
+attribute :vhost_path, kind_of: String, required: true
 
 # Creates the required tags for the application server
 actions :create

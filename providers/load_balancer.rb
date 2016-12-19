@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+use_inline_resources
 # The create action that creates required tags for a load balancer server
 action :create do
   [
     'load_balancer:active=true',
-    "load_balancer:active_#{new_resource.application_name}=true",
+    "load_balancer:active_#{new_resource.application_name}=true"
   ].each do |tag|
     machine_tag tag
   end
@@ -33,7 +33,7 @@ end
 action :delete do
   [
     'load_balancer:active=true',
-    "load_balancer:active_#{new_resource.application_name}=true",
+    "load_balancer:active_#{new_resource.application_name}=true"
   ].each do |tag|
     machine_tag tag do
       action :delete

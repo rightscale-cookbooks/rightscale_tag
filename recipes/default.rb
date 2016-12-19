@@ -18,8 +18,8 @@
 #
 
 require 'ipaddress'
-marker "recipe_start_rightscale" do
-  template "rightscale_audit_entry.erb"
+marker 'recipe_start_rightscale' do
+  template 'rightscale_audit_entry.erb'
 end
 
 include_recipe 'machine_tag'

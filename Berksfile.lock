@@ -34,7 +34,7 @@ GRAPH
     compat_resource (>= 12.14)
   rightscale_tag (2.0.0)
     machine_tag (~> 2.0)
-    marker (~> 2.0.0)
+    marker (~> 2.0)
   seven_zip (2.0.2)
     windows (>= 1.2.2)
   windows (2.1.1)

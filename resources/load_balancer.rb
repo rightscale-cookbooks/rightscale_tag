@@ -18,7 +18,7 @@
 #
 
 # The name of the application the load balancer will serve
-attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :application_name, kind_of: String, name_attribute: true
 
 # Creates the required tags for the load balancer server
 actions :create

@@ -16,25 +16,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+use_inline_resources
 # The create action that creates required tags for a database server
 action :create do
   [
     'database:active=true',
     "database:lineage=#{new_resource.lineage}",
     "database:bind_ip_address=#{new_resource.bind_ip_address}",
-    "database:bind_port=#{new_resource.bind_port}",
+    "database:bind_port=#{new_resource.bind_port}"
   ].each do |tag|
     machine_tag tag
   end
 
   if new_resource.role
     timestamp_file = "/var/lib/rightscale/rightscale_tag_database_#{new_resource.role}_active.timestamp"
-    if ::File.exists?(timestamp_file)
-      timestamp = ::Time.at(::File.read(timestamp_file).to_i)
-    else
-      timestamp = ::Time.now
-    end
+    timestamp = if ::File.exist?(timestamp_file)
+                  ::Time.at(::File.read(timestamp_file).to_i)
+                else
+                  ::Time.now
+                end
 
     directory '/var/lib/rightscale' do
       mode 0755
@@ -57,7 +57,7 @@ action :delete do
     'database:active=true',
     "database:lineage=#{new_resource.lineage}",
     "database:bind_ip_address=#{new_resource.bind_ip_address}",
-    "database:bind_port=#{new_resource.bind_port}",
+    "database:bind_port=#{new_resource.bind_port}"
   ].each do |tag|
     machine_tag tag do
       action :delete
@@ -66,11 +66,11 @@ action :delete do
 
   if new_resource.role
     timestamp_file = "/var/lib/rightscale/rightscale_tag_database_#{new_resource.role}_active.timestamp"
-    if ::File.exists?(timestamp_file)
-      timestamp = ::Time.at(::File.read(timestamp_file).to_i)
-    else
-      timestamp = 0
-    end
+    timestamp = if ::File.exist?(timestamp_file)
+                  ::Time.at(::File.read(timestamp_file).to_i)
+                else
+                  0
+                end
 
     file timestamp_file do
       action :delete

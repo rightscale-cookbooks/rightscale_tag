@@ -30,10 +30,10 @@ class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
 end
 
-ruby_block "Find application servers" do
+ruby_block 'Find application servers' do
   block do
-    ::File.open("/tmp/found_app_servers.json", "w") do |file|
-      file.write find_application_servers(node, "www").to_json
+    ::File.open('/tmp/found_app_servers.json', 'w') do |file|
+      file.write find_application_servers(node, 'www').to_json
     end
   end
 end

@@ -31,10 +31,10 @@ class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
 end
 
-ruby_block "Find database servers" do
+ruby_block 'Find database servers' do
   block do
-    File.open("/tmp/found_db_servers.json", "w") do |file|
-      file.write find_database_servers(node, "production").to_json
+    File.open('/tmp/found_db_servers.json', 'w') do |file|
+      file.write find_database_servers(node, 'production').to_json
     end
   end
 end
