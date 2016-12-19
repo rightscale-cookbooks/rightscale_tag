@@ -25,6 +25,10 @@ platforms:
 - name: ubuntu-12.04
   driver_config:
     box: bento/ubuntu-12.04
+  runlist: ['recipe[apt]']
+  attributes:
+    apt:
+      compile_time_update: true
 - name: ubuntu-14.04
   driver_config:
     box: bento/ubuntu-14.04
