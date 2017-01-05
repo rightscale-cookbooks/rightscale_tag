@@ -3,24 +3,22 @@ DEPENDENCIES
     path: test/cookbooks/fake
   machine_tag
     git: https://github.com/rightscale-cookbooks/machine_tag.git
-    revision: dd3c50723c82feabb538d97265f84d32e59b374a
-    branch: chef-12-migration
+    revision: 2cf4d496223986fdb13af29a7d3434ed7fbda82e
   marker
     git: https://github.com/rightscale-cookbooks/marker.git
-    revision: cf4531671c066643d41d0d38452ec9f81e2646b3
-    branch: chef-12-migration
+    revision: 058e70879408fceceb628c600d487b1ddfa06cdb
   rightscale_tag
     path: .
     metadata: true
 
 GRAPH
-  apt (5.0.0)
-    compat_resource (>= 12.14.7)
-  build-essential (7.0.2)
-    compat_resource (>= 12.14)
+  apt (5.0.1)
+    compat_resource (>= 12.16.3)
+  build-essential (7.0.3)
+    compat_resource (>= 12.16.3)
     mingw (>= 1.1)
     seven_zip (>= 0.0.0)
-  compat_resource (12.16.2)
+  compat_resource (12.16.3)
   fake (0.1.0)
     rightscale_tag (>= 0.0.0)
   machine_tag (2.0.0)
@@ -30,8 +28,8 @@ GRAPH
   mingw (1.2.4)
     compat_resource (>= 0.0.0)
     seven_zip (>= 0.0.0)
-  ohai (4.2.2)
-    compat_resource (>= 12.14)
+  ohai (4.2.3)
+    compat_resource (>= 12.14.7)
   rightscale_tag (2.0.0)
     machine_tag (~> 2.0)
     marker (~> 2.0)
