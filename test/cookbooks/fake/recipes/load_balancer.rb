@@ -29,10 +29,10 @@ class Chef::Resource::RubyBlock
   include Rightscale::RightscaleTag
 end
 
-ruby_block "Find load balancer servers" do
+ruby_block 'Find load balancer servers' do
   block do
-    File.open("/tmp/found_lb_servers.json", "w") do |file|
-      file.write find_load_balancer_servers(node, "api").to_json
+    File.open('/tmp/found_lb_servers.json', 'w') do |file|
+      file.write find_load_balancer_servers(node, 'api').to_json
     end
   end
 end

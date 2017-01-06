@@ -31,11 +31,10 @@ end
 # We use find_application_servers helper to find all the application servers with name www, and we write results to
 # file. Here we are loading the file so it can be parsed
 describe 'Using find_application_servers helper method, the found www server should' do
-
   let(:app_server_tags) { JSON.parse(IO.read('/tmp/found_app_servers.json')) }
 
   it 'return a UUID of 02-BBCDEFG123457' do
-    app_server_tags.has_key?('02-BBCDEFG123457').should be_truthy
+    app_server_tags.key?('02-BBCDEFG123457').should be_truthy
   end
 
   it 'return a www server' do

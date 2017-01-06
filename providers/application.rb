@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+use_inline_resources
 # The create action that creates required tags for an application server
 action :create do
   [
@@ -24,7 +24,7 @@ action :create do
     "application:active_#{new_resource.application_name}=true",
     "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
     "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}",
-    "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}",
+    "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}"
   ].each do |tag|
     machine_tag tag
   end
@@ -39,7 +39,7 @@ action :delete do
     "application:active_#{new_resource.application_name}=true",
     "application:bind_ip_address_#{new_resource.application_name}=#{new_resource.bind_ip_address}",
     "application:bind_port_#{new_resource.application_name}=#{new_resource.bind_port}",
-    "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}",
+    "application:vhost_path_#{new_resource.application_name}=#{new_resource.vhost_path}"
   ].each do |tag|
     machine_tag tag do
       action :delete

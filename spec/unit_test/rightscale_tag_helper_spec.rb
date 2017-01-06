@@ -68,7 +68,7 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'load_balancer:active=true',
-          {:required_tags => Set['server:uuid']}
+          required_tags: Set['server:uuid']
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node)
 
@@ -76,7 +76,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['tags'].should eq(load_balancer_1)
         response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
-        response['01-83PJQDO8911IT']['application_names'].should eq(['www', 'api'])
+        response['01-83PJQDO8911IT']['application_names'].should eq(%w(www api))
 
         response.should include('01-83PJQDO8922IT')
         response['01-83PJQDO8922IT']['tags'].should eq(load_balancer_2)
@@ -95,7 +95,7 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'load_balancer:active_www=true',
-          {:required_tags => Set['server:uuid']}
+          required_tags: Set['server:uuid']
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node, 'www')
 
@@ -103,7 +103,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['tags'].should eq(load_balancer_1)
         response['01-83PJQDO8911IT']['private_ips'].should eq(['10.0.0.1'])
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
-        response['01-83PJQDO8911IT']['application_names'].should eq(['www', 'api'])
+        response['01-83PJQDO8911IT']['application_names'].should eq(%w(www api))
       end
     end
 
@@ -114,7 +114,7 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'load_balancer:active_www=true',
-          {:required_tags => Set['server:uuid']}
+          required_tags: Set['server:uuid']
         ).and_return(tags)
         response = fake.find_load_balancer_servers(node, 'www')
 
@@ -189,7 +189,7 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'application:active=true',
-          {:required_tags => Set['server:uuid']}
+          required_tags: Set['server:uuid']
         ).and_return(tags)
         response = fake.find_application_servers(node)
 
@@ -218,12 +218,12 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'application:active_www=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'application:bind_ip_address_www=*',
             'application:bind_port_www=*',
             'application:vhost_path_www=*'
-          ]}
+          ]
         ).and_return(tags)
         response = fake.find_application_servers(node, 'www')
 
@@ -250,12 +250,12 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'application:active_www=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'application:bind_ip_address_www=*',
             'application:bind_port_www=*',
             'application:vhost_path_www=*'
-          ]}
+          ]
         ).and_return(tags)
         response = fake.find_application_servers(node, 'www')
 
@@ -338,12 +338,12 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:active=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return(tags)
         response = fake.find_database_servers(node)
 
@@ -354,7 +354,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
-        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1_391_803_034))
         response['01-83PJQDO8911IT'].should_not include('slave_since')
         response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
         response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
@@ -365,7 +365,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT'].should_not include('master_since')
-        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1_391_803_892))
         response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
         response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
 
@@ -387,12 +387,12 @@ describe Rightscale::RightscaleTag do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
             node,
             'database:active=true',
-            {:required_tags => Set[
+            required_tags: Set[
               'server:uuid',
               'database:lineage=*',
               'database:bind_ip_address=*',
               'database:bind_port=*',
-            ]}
+            ]
           ).and_return(tags)
           response = fake.find_database_servers(node, nil, nil, only_latest_for_role: true)
 
@@ -421,23 +421,23 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:active=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return(tags)
         response = fake.find_database_servers(node)
 
         response['01-83PJQDO8911IT']['tags'].should eq(database_master_with_slave_tag)
         response['01-83PJQDO8911IT']['role'].should eq('master')
-        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1_391_803_034))
         response['01-83PJQDO8911IT']['slave_since'].should be_nil
 
         response['01-83PJQDO8922IT']['tags'].should eq(database_slave_with_master_tag)
         response['01-83PJQDO8922IT']['role'].should eq('slave')
-        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1_391_803_892))
         response['01-83PJQDO8922IT']['master_since'].should be_nil
       end
     end
@@ -451,12 +451,12 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:active=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return(tags)
         response = fake.find_database_servers(node, 'example')
 
@@ -468,7 +468,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
         response['01-83PJQDO8911IT'].should_not include('slave_since')
-        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1_391_803_034))
         response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
         response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
 
@@ -478,7 +478,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
         response['01-83PJQDO8922IT'].should_not include('master_since')
-        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1_391_803_892))
         response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
         response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
 
@@ -495,12 +495,12 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:active=true',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined')
 
@@ -517,12 +517,12 @@ describe Rightscale::RightscaleTag do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
             node,
             'database:active=true',
-            {:required_tags => Set[
+            required_tags: Set[
               'server:uuid',
               'database:lineage=*',
               'database:bind_ip_address=*',
               'database:bind_port=*',
-            ]}
+            ]
           ).and_return(tags)
           response = fake.find_database_servers(node, 'example', nil, only_latest_for_role: true)
 
@@ -539,13 +539,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:master_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([database_master])
         response = fake.find_database_servers(node, nil, 'master')
 
@@ -554,7 +554,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
-        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1_391_803_034))
         response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
         response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
       end
@@ -563,13 +563,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:slave_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([database_slave])
         response = fake.find_database_servers(node, nil, 'slave')
 
@@ -578,7 +578,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
-        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1_391_803_892))
         response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
         response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
@@ -587,13 +587,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:undefined_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([])
         response = fake.find_database_servers(node, nil, 'undefined')
 
@@ -610,13 +610,13 @@ describe Rightscale::RightscaleTag do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
             node,
             'database:master_active=*',
-            {:required_tags => Set[
+            required_tags: Set[
               'server:uuid',
               'database:active=true',
               'database:lineage=*',
               'database:bind_ip_address=*',
               'database:bind_port=*',
-            ]}
+            ]
           ).and_return(tags)
           response = fake.find_database_servers(node, nil, 'master', only_latest_for_role: true)
 
@@ -631,13 +631,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:master_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([database_master])
         response = fake.find_database_servers(node, 'example', 'master')
 
@@ -646,7 +646,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8911IT']['public_ips'].should eq(['157.56.165.202', '157.56.165.203'])
         response['01-83PJQDO8911IT']['lineage'].should eq('example')
         response['01-83PJQDO8911IT']['role'].should eq('master')
-        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1391803034))
+        response['01-83PJQDO8911IT']['master_since'].should eq(Time.at(1_391_803_034))
         response['01-83PJQDO8911IT']['bind_ip_address'].should eq('10.0.0.1')
         response['01-83PJQDO8911IT']['bind_port'].should eq(3306)
       end
@@ -655,13 +655,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:slave_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([database_slave])
         response = fake.find_database_servers(node, 'example', 'slave')
 
@@ -670,7 +670,7 @@ describe Rightscale::RightscaleTag do
         response['01-83PJQDO8922IT']['public_ips'].should eq(['157.56.166.202', '157.56.166.203'])
         response['01-83PJQDO8922IT']['lineage'].should eq('example')
         response['01-83PJQDO8922IT']['role'].should eq('slave')
-        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1391803892))
+        response['01-83PJQDO8922IT']['slave_since'].should eq(Time.at(1_391_803_892))
         response['01-83PJQDO8922IT']['bind_ip_address'].should eq('157.56.166.202')
         response['01-83PJQDO8922IT']['bind_port'].should eq(3306)
       end
@@ -679,13 +679,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:undefined_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([])
         response = fake.find_database_servers(node, 'example', 'undefined')
 
@@ -697,13 +697,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:master_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined', 'master')
 
@@ -715,13 +715,13 @@ describe Rightscale::RightscaleTag do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node,
           'database:undefined_active=*',
-          {:required_tags => Set[
+          required_tags: Set[
             'server:uuid',
             'database:active=true',
             'database:lineage=*',
             'database:bind_ip_address=*',
             'database:bind_port=*',
-          ]}
+          ]
         ).and_return([])
         response = fake.find_database_servers(node, 'undefined', 'undefined')
 
@@ -738,13 +738,13 @@ describe Rightscale::RightscaleTag do
           Chef::MachineTagHelper.should_receive(:tag_search).with(
             node,
             'database:slave_active=*',
-            {:required_tags => Set[
+            required_tags: Set[
               'server:uuid',
               'database:active=true',
               'database:lineage=*',
               'database:bind_ip_address=*',
               'database:bind_port=*',
-            ]}
+            ]
           ).and_return(tags)
           response = fake.find_database_servers(node, 'example', 'slave', only_latest_for_role: true)
 
@@ -819,10 +819,10 @@ describe Rightscale::RightscaleTag do
       it 'groups application servers by application name' do
         Chef::MachineTagHelper.should_receive(:tag_search).with(
           node, 'application:active=true',
-          {:required_tags => Set['server:uuid']}
+          required_tags: Set['server:uuid']
         ).and_return(tags)
         servers = fake.find_application_servers(node)
-        response = Rightscale::RightscaleTag::group_servers_by_application_name(servers)
+        response = Rightscale::RightscaleTag.group_servers_by_application_name(servers)
 
         response.should be_kind_of(Mash)
 
@@ -842,7 +842,7 @@ describe Rightscale::RightscaleTag do
 
   context 'when no application servers exists' do
     it 'should return an empty Mash' do
-      response = Rightscale::RightscaleTag::group_servers_by_application_name(Mash.new)
+      response = Rightscale::RightscaleTag.group_servers_by_application_name(Mash.new)
 
       response.should be_kind_of(Mash)
       response.should be_empty

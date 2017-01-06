@@ -3,6 +3,12 @@ rightscale_tag Cookbook CHANGELOG
 
 This file is used to list changes made in each version of the rightscale_tag cookbook.
 
+v2.0.0
+------
+
+- Remove support for chef 11, add support for chef 12
+- Remove Strainer tests and replace with rake tests.
+
 v1.2.1
 ------
 
@@ -50,4 +56,3 @@ v1.0.1
 ------
 
 - Initial release to the community
-

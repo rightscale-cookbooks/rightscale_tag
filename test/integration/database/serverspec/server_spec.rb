@@ -53,7 +53,7 @@ describe 'Found database application servers' do
   end
 
   # We want to test that the master_active timestamp is a reasonable value; arbitrarily within the last 24 hours
-  let(:time_from_tags) { Time.parse(db_server_tags['03-CBCDEFG123458']['master_since']).to_i}
+  let(:time_from_tags) { Time.parse(db_server_tags['03-CBCDEFG123458']['master_since']).to_i }
 
   it 'should have a master_since timestamp that is valid (within the last 24 hours)' do
     (Time.now.utc.to_i - time_from_tags).should < 86_400

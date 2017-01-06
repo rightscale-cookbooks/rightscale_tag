@@ -54,11 +54,11 @@ module Rightscale
 
       required_tags(options)
 
-      if application_name
-        query_tag = ::MachineTag::Tag.machine_tag('load_balancer', "active_#{application_name}", true)
-      else
-        query_tag = ::MachineTag::Tag.machine_tag('load_balancer', 'active', true)
-      end
+      query_tag = if application_name
+                    ::MachineTag::Tag.machine_tag('load_balancer', "active_#{application_name}", true)
+                  else
+                    ::MachineTag::Tag.machine_tag('load_balancer', 'active', true)
+                  end
 
       # Performs a tag search for load balancer servers with given attributes.
       # See https://github.com/rightscale-cookbooks/machine_tag#tag_searchnode-query-options-- for more information
@@ -78,7 +78,7 @@ module Rightscale
           tag.predicate.gsub(/^active_/, '')
         end
 
-        {'application_names' => application_names.compact}
+        { 'application_names' => application_names.compact }
       end
     end
 
@@ -150,7 +150,7 @@ module Rightscale
           ::MachineTag::Tag.machine_tag('application', "bind_ip_address_#{application_name}", '*'),
           ::MachineTag::Tag.machine_tag('application', "bind_port_#{application_name}", '*'),
           ::MachineTag::Tag.machine_tag('application', "vhost_path_#{application_name}", '*')
-        )
+                     )
       else
         query_tag = ::MachineTag::Tag.machine_tag('application', 'active', true)
       end
@@ -184,7 +184,7 @@ module Rightscale
           [application_name, application_hash]
         end
 
-        {'applications' => Hash[application_hashes.compact]}
+        { 'applications' => Hash[application_hashes.compact] }
       end
     end
 
@@ -281,7 +281,7 @@ module Rightscale
         ::MachineTag::Tag.machine_tag('database', 'lineage', '*'),
         ::MachineTag::Tag.machine_tag('database', 'bind_ip_address', '*'),
         ::MachineTag::Tag.machine_tag('database', 'bind_port', '*')
-      )
+                   )
 
       # Performs a tag search for database servers with given attributes.
       # See https://github.com/rightscale-cookbooks/machine_tag#tag_searchnode-query-options-- for more information
@@ -299,7 +299,7 @@ module Rightscale
         server_hash = {
           'lineage' => tags['database:lineage'].first.value,
           'bind_ip_address' => tags['database:bind_ip_address'].first.value,
-          'bind_port' => tags['database:bind_port'].first.value.to_i,
+          'bind_port' => tags['database:bind_port'].first.value.to_i
         }
         master_active = tags['database:master_active'].first
         slave_active = tags['database:slave_active'].first
@@ -333,14 +333,14 @@ module Rightscale
       if only_latest_for_role
         server_hashes = server_hashes.sort_by { |_, server_hash| server_hash['lineage'] }.chunk do |_, server_hash|
           server_hash['lineage']
-        end.map do |lineage, server_hashes|
+        end.map do |_lineage, server_hashes|
           server_hashes.sort_by { |_, server_hash| server_hash['role'] || '' }.chunk do |_, server_hash|
             server_hash['role'] || ''
           end.map do |role, server_hashes|
             if role.empty?
               server_hashes
             else
-              [server_hashes.max_by { |uuid, server_hash| server_hash["#{role}_since"] }]
+              [server_hashes.max_by { |_uuid, server_hash| server_hash["#{role}_since"] }]
             end
           end
         end
@@ -483,8 +483,8 @@ module Rightscale
         uuid = tags['server:uuid'].first.value
         server_hash = {
           'tags' => tags,
-          'public_ips' => tags[/^server:public_ip_\d+$/].map { |tag| tag.value },
-          'private_ips' => tags[/^server:private_ip_\d+$/].map { |tag| tag.value },
+          'public_ips' => tags[/^server:public_ip_\d+$/].map(&:value),
+          'private_ips' => tags[/^server:private_ip_\d+$/].map(&:value)
         }
 
         server_hash.merge!(block.call(tags)) if block
