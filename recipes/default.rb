@@ -28,16 +28,33 @@ if node['rightscale'] && node['rightscale']['instance_uuid']
   machine_tag "server:uuid=#{node['rightscale']['instance_uuid']}"
 end
 
+ip_addr = node['ipaddress']
 if node['cloud']
-  if node['cloud']['public_ips']
+  if node['cloud']['public_ips'] && !node['cloud']['public_ips'].first.nil?
     node['cloud']['public_ips'].reject { |ip| ip.nil? || ip.empty? || IPAddress(ip).private? }.each_with_index do |public_ip, index|
       machine_tag "server:public_ip_#{index}=#{public_ip}"
     end
+  elsif node['cloud_v2']
+    if node['cloud_v2']['public_ipv4_addrs']
+      node['cloud_v2']['public_ipv4_addrs'].reject { |ip| ip.nil? || ip.empty? || IPAddress(ip).private? }.each_with_index do |public_ip, index|
+        machine_tag "server:public_ip_#{index}=#{public_ip}"
+      end
+    end
+  else
+    machine_tag "server:public_ip_0=#{ip_addr}" unless IPAddress(ip_addr).private?
   end
 
-  if node['cloud']['private_ips']
+  if node['cloud']['private_ips'] && !node['cloud']['private_ips'].first.nil?
     node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
       machine_tag "server:private_ip_#{index}=#{private_ip}"
     end
+  elsif node['cloud_v2']
+    if node['cloud_v2']['local_ipv4_addrs']
+      node['cloud_v2']['local_ipv4_addrs'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
+        machine_tag "server:private_ip_#{index}=#{private_ip}"
+      end
+    end
+  elsif IPAddress(ip_addr).private?
+    machine_tag "server:private_ip_0=#{ip_addr}"
   end
 end

@@ -30,7 +30,7 @@ GRAPH
     seven_zip (>= 0.0.0)
   ohai (4.2.3)
     compat_resource (>= 12.14.7)
-  rightscale_tag (2.0.0)
+  rightscale_tag (2.0.1)
     machine_tag (~> 2.0)
     marker (~> 2.0)
   seven_zip (2.0.2)
