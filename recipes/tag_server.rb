@@ -24,10 +24,9 @@ end
 
 include_recipe 'rightscale_tag::default'
 
-
 # Set up application server tags
 rightscale_tag_application node['rightscale_tag']['application_name'] do
-  #bind_ip_address RsApplicationPhp::Helper.get_bind_ip_address(node)
+  # bind_ip_address RsApplicationPhp::Helper.get_bind_ip_address(node)
   bind_port node['rightscale_tag']['listen_port'].to_i
   vhost_path node['rightscale_tag']['vhost_path']
   action :create

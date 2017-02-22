@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rspec/core/rake_task'
 require 'foodcritic'
 require 'kitchen'
@@ -6,6 +7,7 @@ directory = File.expand_path(File.dirname(__FILE__))
 
 desc 'Sets up knife, and vendors cookbooks'
 task :setup_test_environment do
+  sh('chef exec bundle install')
   File.open('knife.rb', 'w+') do |file|
     file.write <<-EOF
       log_level                :debug
@@ -76,7 +78,7 @@ desc 'runs foodcritic linttask'
 task :fc_new do
   FoodCritic::Rake::LintTask.new(:chef) do |t|
     t.options = {
-      fail_tags: ['any']
+      fail_tags: ['any'],
     }
   end
 end

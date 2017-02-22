@@ -21,7 +21,7 @@ use_inline_resources
 action :create do
   [
     'load_balancer:active=true',
-    "load_balancer:active_#{new_resource.application_name}=true"
+    "load_balancer:active_#{new_resource.application_name}=true",
   ].each do |tag|
     machine_tag tag
   end
@@ -33,7 +33,7 @@ end
 action :delete do
   [
     'load_balancer:active=true',
-    "load_balancer:active_#{new_resource.application_name}=true"
+    "load_balancer:active_#{new_resource.application_name}=true",
   ].each do |tag|
     machine_tag tag do
       action :delete

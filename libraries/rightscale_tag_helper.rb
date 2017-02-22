@@ -299,7 +299,7 @@ module Rightscale
         server_hash = {
           'lineage' => tags['database:lineage'].first.value,
           'bind_ip_address' => tags['database:bind_ip_address'].first.value,
-          'bind_port' => tags['database:bind_port'].first.value.to_i
+          'bind_port' => tags['database:bind_port'].first.value.to_i,
         }
         master_active = tags['database:master_active'].first
         slave_active = tags['database:slave_active'].first
@@ -484,7 +484,7 @@ module Rightscale
         server_hash = {
           'tags' => tags,
           'public_ips' => tags[/^server:public_ip_\d+$/].map(&:value),
-          'private_ips' => tags[/^server:private_ip_\d+$/].map(&:value)
+          'private_ips' => tags[/^server:private_ip_\d+$/].map(&:value),
         }
 
         server_hash.merge!(block.call(tags)) if block

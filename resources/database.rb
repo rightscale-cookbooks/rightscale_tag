@@ -30,11 +30,11 @@ attribute :bind_ip_address, kind_of: String, required: true, callbacks: {
     rescue ArgumentError
       false
     end
-  end
+  end,
 }
 
 # The bind port of the database
-attribute :bind_port, kind_of: Fixnum, required: true
+attribute :bind_port, kind_of: Integer, required: true
 
 # The role of the database server. This attribute should only contain alphanumeric characters and underscores and
 # should start with a letter.

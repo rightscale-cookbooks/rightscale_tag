@@ -23,7 +23,7 @@ action :create do
     'database:active=true',
     "database:lineage=#{new_resource.lineage}",
     "database:bind_ip_address=#{new_resource.bind_ip_address}",
-    "database:bind_port=#{new_resource.bind_port}"
+    "database:bind_port=#{new_resource.bind_port}",
   ].each do |tag|
     machine_tag tag
   end
@@ -57,7 +57,7 @@ action :delete do
     'database:active=true',
     "database:lineage=#{new_resource.lineage}",
     "database:bind_ip_address=#{new_resource.bind_ip_address}",
-    "database:bind_port=#{new_resource.bind_port}"
+    "database:bind_port=#{new_resource.bind_port}",
   ].each do |tag|
     machine_tag tag do
       action :delete

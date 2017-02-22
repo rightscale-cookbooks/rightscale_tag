@@ -74,28 +74,28 @@ Vagrant.configure('2') do |config|
       mysql: {
         server_root_password: 'rootpass',
         server_debian_password: 'debpass',
-        server_repl_password: 'replpass'
+        server_repl_password: 'replpass',
       },
       rightscale: {
-        instance_uuid: '01-ABCDEFG123456'
+        instance_uuid: '01-ABCDEFG123456',
       },
       cloud: {
         provider: 'vagrant',
         public_ips: [
           nil,
           '',
-          '33.33.33.10'
+          '33.33.33.10',
         ],
         private_ips: [
           nil,
           '',
-          '10.0.2.15'
-        ]
-      }
+          '10.0.2.15',
+        ],
+      },
     }
 
     chef.run_list = [
-      'recipe[rightscale_tag::default]'
+      'recipe[rightscale_tag::default]',
     ]
   end
 end

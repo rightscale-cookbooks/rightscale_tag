@@ -30,11 +30,11 @@ attribute :bind_ip_address, kind_of: String, required: true, callbacks: {
     rescue ArgumentError
       false
     end
-  end
+  end,
 }
 
 # The bind port of the application
-attribute :bind_port, kind_of: Fixnum, required: true
+attribute :bind_port, kind_of: Integer, required: true
 
 # The vhost path of the application. Examples: `'api.example.com'`, `'/api'`
 attribute :vhost_path, kind_of: String, required: true
