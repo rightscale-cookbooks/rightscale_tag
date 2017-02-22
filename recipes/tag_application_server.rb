@@ -22,31 +22,17 @@ marker 'recipe_start_rightscale' do
   template 'rightscale_audit_entry.erb'
 end
 
+class Chef::Recipe
+  include Rightscale::RightscaleTag
+end
+
 include_recipe 'rightscale_tag::default'
 
+private_ip = Rightscale::RightscaleTag.private_ip?(node)
 # Set up application server tags
 rightscale_tag_application node['rightscale_tag']['application_name'] do
-  bind_ip_address private_ip?
+  bind_ip_address private_ip
   bind_port node['rightscale_tag']['listen_port'].to_i
   vhost_path node['rightscale_tag']['vhost_path']
   action :create
-end
-
-def private_ip?
-  ip_addr = node['ipaddress']
-  private_ip = nil
-  if node['cloud']['private_ips'] && !node['cloud']['private_ips'].first.nil?
-    node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
-      private_ip="#{private_ip}"
-    end
-  elsif node['cloud_v2']
-    if node['cloud_v2']['local_ipv4_addrs']
-      node['cloud_v2']['local_ipv4_addrs'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, index|
-        private_ip="#{private_ip}"
-      end
-    end
-  elsif IPAddress(ip_addr).private?
-    private_ip = ip_addr
-  end
-  return private_ip
 end

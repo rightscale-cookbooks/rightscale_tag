@@ -494,5 +494,24 @@ module Rightscale
 
       Mash.from_hash(Hash[server_hashes])
     end
+
+    def self.private_ip?(node)
+      ip_addr = node['ipaddress']
+      @private_ip = nil
+      if node['cloud']['private_ips'] && !node['cloud']['private_ips'].first.nil?
+        node['cloud']['private_ips'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, _index|
+          @private_ip = private_ip.to_s
+        end
+      elsif node['cloud_v2']
+        if node['cloud_v2']['local_ipv4_addrs']
+          node['cloud_v2']['local_ipv4_addrs'].reject { |ip| ip.nil? || ip.empty? || !IPAddress(ip).private? }.each_with_index do |private_ip, _index|
+            @private_ip = private_ip.to_s
+          end
+        end
+      elsif IPAddress(ip_addr).private?
+        @private_ip = ip_addr
+      end
+      @private_ip
+    end
   end
 end

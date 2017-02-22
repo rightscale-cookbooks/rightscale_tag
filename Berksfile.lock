@@ -3,7 +3,7 @@ DEPENDENCIES
     path: test/cookbooks/fake
   machine_tag
     git: https://github.com/rightscale-cookbooks/machine_tag.git
-    revision: 581dd0b7ddf2e65939527bb5e6c6c47788d1bf33
+    revision: e3b01e6e3af364ce2ee73a28445f08c833a2ac3f
   marker
     git: https://github.com/rightscale-cookbooks/marker.git
     revision: 058e70879408fceceb628c600d487b1ddfa06cdb
@@ -12,16 +12,14 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
-  apt (5.0.1)
-    compat_resource (>= 12.16.3)
-  build-essential (7.0.3)
-    compat_resource (>= 12.16.3)
+  apt (6.0.0)
+  build-essential (8.0.0)
     mingw (>= 1.1)
     seven_zip (>= 0.0.0)
   compat_resource (12.16.3)
   fake (0.1.0)
     rightscale_tag (>= 0.0.0)
-  machine_tag (2.0.1)
+  machine_tag (2.0.2)
     apt (>= 0.0.0)
     build-essential (>= 0.0.0)
   marker (2.0.0)
