@@ -51,6 +51,7 @@ suites:
       - ""
       - 10.0.2.15
 
+
 # Load Balancer server tests
 - name: load_balancer
   run_list:
@@ -69,6 +70,19 @@ suites:
   run_list:
   - recipe[rightscale_tag]
   - recipe[fake::application]
+  attributes:
+    rightscale:
+      instance_uuid: 02-BBCDEFG123457
+    cloud:
+      provider: vagrant
+      public_ips: ['33.33.33.10']
+      private_ips: ['10.0.2.15']
+
+# Application recipe server tests
+- name: application_tag_recipe
+  run_list:
+  - recipe[rightscale_tag]
+  - recipe[rightscale_tag:tag_application_server]
   attributes:
     rightscale:
       instance_uuid: 02-BBCDEFG123457
